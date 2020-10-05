@@ -50,6 +50,12 @@
         <h3 class="subtitle has-text-light">Create a new..</h3>
         <p v-for="(block,i) in blocks" :key="`${block.name}-${i}`" @click="index = i; tree.push(blocks[index].types[subindex])" class="light-link">{{block.name}}</p>
       </section>
+       <section v-if="special !== null">
+        <h3 class="subtitle has-text-light">What's next?</h3>
+        <p class="light-link" @click="tree.push(special.types[special.types[subindex+1].index]); subindex = special.types[subindex+1].index;  special=null;  " >{{special.types[special.types[subindex+1].index].name}}</p>
+        <p class="light-link" v-if="special.types[subindex+2]" @click="tree.push(special.types[subindex+2]); subindex = subindex+2; special = null; ">{{special.types[subindex+2].name}}</p>
+        <p class="light-link" @click="index = null; special= null; subindex=0;">End block</p>
+      </section>
       
     </section>
 
@@ -89,7 +95,19 @@ export default {
                 starters: ["An example that shows this well"],
                 desc: "Reasoning is the process for making clear how your evidence supports your claim. In scientific argumentation, clear reasoning includes using scientific ideas or principles to make logical connections to show how the evidence supports the claim.",
                 prompt: "How does this evidence support the claim?"
-              }
+              },
+               {
+                special: "loop",
+                index:1
+              },
+               {
+                name: "Conclusion",
+                color: "#f1c40f",
+                starters: ["To conclude"],
+                desc: "End your paragraph with a concluding sentence or sentences that reasserts how your paragraph contributes to the development of your argument as a whole.",
+                prompt: "Condlu"
+              },
+          
             ]
           },
           {
@@ -109,6 +127,7 @@ export default {
         index: null,
         subindex: 0,
         selected: null,
+        special: null,
         settings: {
           borders: false,
           templateOpen: false,
@@ -118,30 +137,49 @@ export default {
     },
     methods: {
       newBlock(event) {
+        //DEBUG REMOVE LATER
         this.tree.push("s")
       },
       onEnter: function () {
+        //HANDLE NEW BLOCK
+        const currentBlock = this.blocks[this.index] //Get the current block
+        //Do nothing if waiting for user to choose one
         if (this.index == null) {
           return
         }
+        //Move the type index up by one
         this.subindex = this.subindex + 1
-        if (this.blocks[this.index].types[this.subindex]) {
-          const item = this.blocks[this.index].types[this.subindex]
+
+        //If there are no more types, prompt user to choose new block
+        if (currentBlock.types[this.subindex] == null) {
+           this.index = null
+          this.subindex = 0
+          return
+        }
+        //If the next type is special, do special option
+        if (currentBlock.types[this.subindex].special) {
+          //Special types like looping
+          
+          switch (currentBlock.types[this.subindex].special){
+            case "loop":
+              this.special = currentBlock
+              break;
+          }
+          this.subindex = this.subindex - 1
+
+        }else{ // ELSE - add next type to doc tree
+          const item = currentBlock.types[this.subindex]
           this.tree.push(item)
           this.$buefy.toast.open({
             type: "is-success",
             message: `Writing ${item.name}`
           })
           this.selected = item
-        } else {
-          this.index = null
-          this.subindex = 0
-        }
+        } 
       },
       addText: function (text) {
 
         const textarea = document.createElement('textarea')
-        // hide the textarea (since we can't use display: none, it's a bit long)
         textarea.style.opacity = 0
         textarea.style.width = 0
         textarea.style.height = 0
