@@ -1,13 +1,14 @@
 <template>
   <div>
     <GlobalEvents @keydown.tab="onEnter"/>
-    <section class="rightBar has-text-light">
+    <div class="mt-3 mx-1 columns app">
+    <section class="column is-one-quarter rightBar has-text-light">
       <h1 class="title has-text-light">WriteKit</h1>
       <b-tabs :multiline="true">
         <b-tab-item  label="Focus">
           <section v-if="selected !== null">
-            <h2 class="subtitle has-text-light"> {{selected.name}}</h2>
-            <p> {{selected.desc}}</p>
+            <h2 class="title has-text-light"> {{selected.name}}</h2>
+            <p style="white-space: pre-wrap;"> {{selected.desc}}</p>
             <br>
              <h2 class="subtitle has-text-light">Templates</h2>
               <section  style="max-height: 30vh; overflow-y:scroll; overflow-x: hidden;">
@@ -18,29 +19,73 @@
             </section>
           </section>
         </b-tab-item>
-        <b-tab-item label="Visuals">
+        <b-tab-item label="Settings">
           <div class="field">
             <b-switch v-model="settings.borders">Borders</b-switch>
           </div>
           <div class="field">
             <b-switch v-model="settings.box">Box</b-switch>
           </div>
-        </b-tab-item>
-        <b-tab-item label="Settings">
           <div class="field">
+            <b-switch v-model="settings.tooltip">Tooltips</b-switch>
+          </div>
+        </b-tab-item>
+        <b-tab-item label="Setup">
+          <section>
             <h2 class="subtitle has-text-light">Installed Blocks</h2>
-            <div v-for="(block,i) in blocks" :key="`block-${i}`" class="box has-background-black has-text-light">
+            <div v-for="(block,i) in blocks" :key="`block-${i}`" @click="menus.selectedBlock = block" class="box has-background-black has-text-light block-box">
               {{block.name}}
             </div>
-            <div class="box has-background-info has-text-light">
-              Add more <i class='bx bx-plus-medical'></i>
+           
+          </section>
+          <br>
+          <section>
+              <h2 class="subtitle has-text-light">Type Explorer</h2>
+              <div v-if="menus.selectedBlock !== null">
+              <p v-for="(type,i) in menus.selectedBlock.types" :key="`${type.name}-${i}`" :style="`color: ${type.color};`">{{type.name}}</p>
+              </div>
+          </section>
+        </b-tab-item>
+        <b-tab-item label="Marketplace">
+          <h1 class="title has-text-light">Marketplace</h1>
+          <p class="subtitle has-text-light">Installed Block Packs</p>
+           <b-collapse
+            aria-id="contentIdForA11y2"
+            class="panel"
+            animation="slide">
+            <div
+                slot="trigger"
+                class="panel-heading"
+                role="button"
+                aria-controls="contentIdForA11y2">
+                <strong>Standard Essay Blocks</strong>
             </div>
-          </div>
+            <div style="background-color:#3C4042" class="panel-block has-text-light">
+                Comes pre-installed with every version of WriteKit. Contains three standard blocks for writing essays.
+            </div>
+        </b-collapse>
+
+          <b-collapse
+            aria-id="contentIdForA11y2"
+            class="panel"
+            animation="slide">
+            <div
+                slot="trigger"
+                class="panel-heading"
+                role="button"
+                aria-controls="contentIdForA11y2">
+                <strong>Standard Essay Blocks</strong>
+            </div>
+            <div style="background-color:#3C4042" class="panel-block has-text-light">
+                Comes pre-installed with every version of WriteKit. Contains three standard blocks for writing essays.
+            </div>
+        </b-collapse>
+
         </b-tab-item>
       </b-tabs>
 
     </section>
-    <section class="container has-text-light">
+    <section class=" column container has-text-light margin" style="margin:2%;">
       <h1 class="title has-text-light">Untilted Document</h1>
       
       <TextInput v-for="(item,i) in tree" :key="`text-${i}`" @click.native="selected = item" :settings="settings" :data="item"></TextInput>
@@ -54,10 +99,12 @@
         <h3 class="subtitle has-text-light">What's next?</h3>
         <p class="light-link" @click="tree.push(special.types[special.types[subindex+1].index]); subindex = special.types[subindex+1].index;  special=null;  " >{{special.types[special.types[subindex+1].index].name}}</p>
         <p class="light-link" v-if="special.types[subindex+2]" @click="tree.push(special.types[subindex+2]); subindex = subindex+2; special = null; ">{{special.types[subindex+2].name}}</p>
+          <br>
         <p class="light-link" @click="index = null; special= null; subindex=0;">End block</p>
       </section>
       
     </section>
+    </div>
 
   </div>
 </template>
@@ -74,6 +121,31 @@ export default {
     data: function () {
       return {
         blocks: [{
+            name:"Introduction",
+            types:[{
+              name:"Broad Statement",
+              color:"#fdcb6e",
+              desc:"The first sentence of your introduction is the first chance a writer has to capture the attention of the reader. It is important to consider who your reader or audience is before you decide which type of attention grabber you will use for your essay.",
+              prompt: "Try to think of what you find most interesting about the topic you are writing about and communicate that to your reader in a sentence or two.",
+              starters:["A definition", "A quotation or paraphrase", "A statement of opinion that you intend to challenge", "An interesting incident or anecdote related to your subject", "An explanation of why the topic is worth writing/reading about", "A question that will be answered by your thesis"]
+            },
+            {name: "Ideas to Introduce Thesis",
+              color:"#d63031",
+              desc:"A sentence that deals with your specific topic. Getting less broad with each statement",
+              prompt: "Discuss the importance of..",
+              starters:[]
+            },
+            {name: "Thesis ",
+              color:"#fdcb6e",
+              desc:`Topic sentences and thesis statements are sentences that writers use to focus their ideas and express the main point of their writing. Help to let the reader know what the purpose or main idea of an essay is \n\n Outline how you will support that main idea \n\nUse a path statement to refer to supporting points you will be using.\n\n A path statement is like a sneak peak at your main supporting ideas. \n\nParagraphs supporting these points in your essay will appear in the same order as they are listed in the path statement.`,
+              prompt: "Discuss the importance of..",
+              starters:[]
+            }
+            
+            ]
+            },
+        
+            {
             name: "Body Paragraph",
             types: [{
                 name: "Topic",
@@ -128,10 +200,14 @@ export default {
         subindex: 0,
         selected: null,
         special: null,
+        menus:{
+          selectedBlock: null
+        },
         settings: {
           borders: false,
           templateOpen: false,
           box: false,
+          tooltip:false
         }
       }
     },
@@ -210,12 +286,6 @@ export default {
 html{
   background-color:#2d3436;
 }
-.rightBar{
-  position:fixed;
-  padding:1%;
-  max-width:12vw;
-  resize:both;
-}
 .light-link{
   color:white;
   text-decoration: underline;
@@ -238,4 +308,15 @@ html{
 .tabs a{
   color:white;
 }
+.block-box{
+  cursor: pointer;
+   border: 1px solid rgba(0, 0, 0, 1);
+}
+.block-box:hover{
+  border: 1px solid white;
+}
+.secondaryTitle{
+  font-family:Times New Roman;
+}
+
 </style>
