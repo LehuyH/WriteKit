@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<GlobalEvents @keydown.tab="onEnter" />
+		<GlobalEvents @keydown.enter.prevent="onEnter" />
 		<div class="mt-3 mx-1 columns app">
 			<section class="column is-one-quarter rightBar has-text-light">
 				<h1 class="title has-text-light">WriteKit</h1>
@@ -10,30 +10,22 @@
 							<h2 class="title has-text-light">
 								{{ selected.name }}
 							</h2>
-							<p style="white-space: pre-wrap">
-								{{ selected.desc }}
-							</p>
+							<p style="white-space: pre-wrap; text-align:left;">{{ selected.desc }}</p>
 							<br />
-							<h2 class="subtitle has-text-light">Templates</h2>
-							<section
-								style="
+							<b-collapse class="panel" animation="slide">
+							  <b-button :open="false" slot="trigger" type="is-light" class="subtitle">Templates</b-button>
+							  <section style="
 									max-height: 30vh;
 									overflow-y: scroll;
 									overflow-x: hidden;
-								"
-							>
-								<div
-									@click="addText(starter)"
-									v-for="(starter, i) in selected.starters"
-									:key="`${i}`"
-								>
-									<p
-										class="light-link menu box has-background-black"
-									>
-										{{ starter }}
-									</p>
-								</div>
-							</section>
+								">
+							    <div @click="addText(starter)" v-for="(starter, i) in selected.starters" :key="`${i}`">
+							      <p class="light-link menu box has-background-black">
+							        {{ starter }}
+							      </p>
+							    </div>
+							  </section>
+							</b-collapse>
 						</section>
 					</b-tab-item>
 					<b-tab-item label="Settings">
@@ -48,6 +40,11 @@
 						<div class="field">
 							<b-switch v-model="settings.tooltip"
 								>Tooltips</b-switch
+							>
+						</div>
+						<div class="field">
+							<b-switch v-model="settings.titles"
+								>Titles</b-switch
 							>
 						</div>
 					</b-tab-item>
@@ -88,7 +85,6 @@
 							Installed Block Packs
 						</p>
 						<b-collapse
-							aria-id="contentIdForA11y2"
 							class="panel"
 							animation="slide"
 						>
@@ -96,7 +92,7 @@
 								slot="trigger"
 								class="panel-heading"
 								role="button"
-								aria-controls="contentIdForA11y2"
+								
 							>
 								<strong>Standard Essay Blocks</strong>
 							</div>
@@ -196,7 +192,7 @@ export default {
 					types: [
 						{
 							name: "Broad Statement",
-							color: "#fdcb6e",
+							color: "yellow",
 							desc:
 								"The first sentence of your introduction is the first chance a writer has to capture the attention of the reader. It is important to consider who your reader or audience is before you decide which type of attention grabber you will use for your essay.",
 							prompt:
@@ -212,7 +208,7 @@ export default {
 						},
 						{
 							name: "Ideas to Introduce Thesis",
-							color: "#d63031",
+							color: "red",
 							desc:
 								"A sentence that deals with your specific topic. Getting less broad with each statement",
 							prompt: "Discuss the importance of..",
@@ -220,9 +216,9 @@ export default {
 						},
 						{
 							name: "Thesis ",
-							color: "#fdcb6e",
+							color: "yellow",
 							desc: `Topic sentences and thesis statements are sentences that writers use to focus their ideas and express the main point of their writing. Help to let the reader know what the purpose or main idea of an essay is \n\n Outline how you will support that main idea \n\nUse a path statement to refer to supporting points you will be using.\n\n A path statement is like a sneak peak at your main supporting ideas. \n\nParagraphs supporting these points in your essay will appear in the same order as they are listed in the path statement.`,
-							prompt: "Discuss the importance of..",
+							prompt: "What is your document trying to say?",
 							starters: [],
 						},
 					],
@@ -233,7 +229,7 @@ export default {
 					types: [
 						{
 							name: "Topic",
-							color: "#ffeaa7",
+							color: "yellow",
 							starters: [
 								"This essay discusses",
 								"In this essay",
@@ -247,7 +243,7 @@ export default {
 						},
 						{
 							name: "Evidence",
-							color: "#ff7979",
+							color: "red",
 							starters: ["An example that shows this well"],
 							desc:
 								"This is how you support, or back up, your claims. The evidence will help to 'prove' each claim to the reader.",
@@ -255,7 +251,7 @@ export default {
 						},
 						{
 							name: "Reasoning",
-							color: "#ffbe76",
+							color: "orange",
 							starters: ["An example that shows this well"],
 							desc:
 								"Reasoning is the process for making clear how your evidence supports your claim. In scientific argumentation, clear reasoning includes using scientific ideas or principles to make logical connections to show how the evidence supports the claim.",
@@ -267,7 +263,7 @@ export default {
 						},
 						{
 							name: "Conclusion",
-							color: "#f1c40f",
+							color: "yellow",
 							starters: ["To conclude"],
 							desc:
 								"End your paragraph with a concluding sentence or sentences that reasserts how your paragraph contributes to the development of your argument as a whole.",
@@ -280,7 +276,7 @@ export default {
 					types: [
 						{
 							name: "Transition Sentence",
-							color: "#00b894",
+							color: "green",
 							prompt:
 								"What does the sentence before this one say? How does this sentence relate to that one?",
 							starters: [
@@ -384,6 +380,7 @@ export default {
 				templateOpen: false,
 				box: false,
 				tooltip: false,
+				titles:false
 			},
 		};
 	},
@@ -396,7 +393,13 @@ export default {
 			//HANDLE NEW BLOCK
 			const currentBlock = this.blocks[this.index]; //Get the current block
 			//Do nothing if waiting for user to choose one
-      if (this.index === null) return;
+				  if (this.index === null){ 
+					  this.$buefy.toast.open({
+				message: "Please choose a block",
+				type: "is-light",
+			});
+						  return
+						  }
       
 			//Move the type index up by one
 			this.subindex = this.subindex + 1;

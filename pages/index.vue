@@ -8,11 +8,20 @@
         </div>
 
         <section class="main-content">
-            <OptionTabs />
+            <OptionTabs :menus="menus" :settings="settings" />
             <WritingPane />
         </section>
     </div>
 </template>
+
+
+<script>
+import { state } from "@/state";
+
+export default {
+
+}
+</script>
 
 <style scoped>
 .main-content {
