@@ -1,6 +1,29 @@
 <template>
   <div class="option-tabs section">
     <b-tabs>
+       <b-tab-item label="Focus">
+         <section v-if="state.selected !== null">
+							<h2 class="title">
+								{{ state.selected.name }}
+							</h2>
+							<p style="white-space: pre-wrap; text-align:left;">{{ state.selected.desc }}</p>
+							<br />
+							<b-collapse class="panel" animation="slide">
+							  <b-button :open="false" slot="trigger" type="is-light" class="subtitle">Templates</b-button>
+							  <section style="
+									max-height: 30vh;
+									overflow-y: scroll;
+									overflow-x: hidden;
+								">
+							    <div @click="addText(starter)" v-for="(starter, i) in state.selected.starters" :key="`${i}`">
+							      <p class="template-btn box has-background-black has-text-light">
+							        {{ starter }}
+							      </p>
+							    </div>
+							  </section>
+							</b-collapse>
+						</section>
+      </b-tab-item>
       <b-tab-item label="Explorer">
         <b-collapse
           animation="slide"
@@ -29,9 +52,9 @@
 
               <div class="level-right">
                 <b-button
-                  @click="addBlock(block, type)"
+                  @click="addBlock(type)"
                   type="is-dark"
-                  >Add this block</b-button
+                  >Add this type</b-button
                 >
               </div>
             </div>
@@ -40,13 +63,13 @@
       </b-tab-item>
       <b-tab-item label="Settings">
         <div class="field">
-          <b-switch v-model="settings.borders">Borders</b-switch>
+          <b-switch v-model="state.settings.borders">Borders</b-switch>
         </div>
         <div class="field">
-          <b-switch v-model="settings.box">Box</b-switch>
+          <b-switch v-model="state.settings.box">Box</b-switch>
         </div>
         <div class="field">
-          <b-switch v-model="settings.tooltip">Tooltips</b-switch>
+          <b-switch v-model="state.settings.titles">Titles</b-switch>
         </div>
       </b-tab-item>
       <b-tab-item label="Setup">
@@ -55,19 +78,18 @@
           <div
             v-for="(block, i) in blocks"
             :key="i"
-            class="add-block-card has-background-dark has-text-light level"
+            class="add-block-card has-background-light level"
             :style="` align-items: end;`"
           >
             <div class="level-left" style="width: 75%">
               <div>
-                <h1 class="title is-4 has-text-light">{{ block.name }}</h1>
+                <h1 class="title is-4">{{ block.name }}</h1>
                 <h2 class="subtitle is-5">{{ block.desc }}</h2>
               </div>
             </div>
 
             <div class="level-right m-2">
-              <b-button @click="addBlock(blockName)" type="is-light"
-                >Add this type</b-button
+              <b-button>Settings</b-button
               >
             </div>
           </div>
@@ -75,9 +97,9 @@
         <br />
         <section>
           <h2 class="subtitle">Type Explorer</h2>
-          <div v-if="menus.selectedBlock !== null">
+          <div v-if="state.menus.selectedBlock !== null">
             <p
-              v-for="(type, i) in menus.selectedBlock.types"
+              v-for="(type, i) in state.menus.selectedBlock.types"
               :key="`${type.name}-${i}`"
               :style="`color: ${type.color};`"
             >
@@ -104,26 +126,27 @@
 </template>
 
 <script>
+import state from '../state/index.js'
 export default {
-  props: {
-    settings: Object,
-    menus: Object,
-  },
   computed: {
     blocks() {
-      return this.$store.state.blocks;
+      return state.blocks;
     },
     document() {
-      return this.$store.state.document;
+      return state.document;
     },
+    state(){return state
+    }
   },
   methods: {
-    addBlock(block, type) {
-      this.$store.commit("updateDocument", [
-        ...this.document,
-        { block, type, content: "" },
-      ]);
+    addBlock(type) {
+      let newType = JSON.parse(JSON.stringify(type))
+      newType.content =""
+       state.document.content[state.currentBlockIndex].push(newType);
     },
+    addText(text){
+      state.document.content[state.currentBlockIndex][state.typeIndex].content = `${text} ${state.document.content[state.currentBlockIndex][state.typeIndex].content}`
+    }
   },
 };
 </script>

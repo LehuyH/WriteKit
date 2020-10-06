@@ -8,7 +8,7 @@
         </div>
 
         <section class="main-content">
-            <OptionTabs :menus="menus" :settings="settings" />
+            <OptionTabs/>
             <WritingPane />
         </section>
     </div>

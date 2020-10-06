@@ -1,3 +1,4 @@
+import Vue from 'vue'
 export const state = new Vue({
   data: {
     title: "Juicy English Essay",
@@ -62,6 +63,18 @@ export const state = new Vue({
             starters: ["An example that shows this well"],
             desc: "Reasoning is the process for making clear how your evidence supports your claim. In scientific argumentation, clear reasoning includes using scientific ideas or principles to make logical connections to show how the evidence supports the claim.",
             prompt: "How does this evidence support the claim?",
+          },
+          {
+							special: "loop",
+							index: 1,
+						},
+          {
+            name: "Conclusion",
+            color: "#ffeaa7",
+            starters: ["To conclude"],
+            desc:
+              "End your paragraph with a concluding sentence or sentences that reasserts how your paragraph contributes to the development of your argument as a whole.",
+            prompt: "Condlu",
           },
         ],
       },
@@ -157,10 +170,10 @@ export const state = new Vue({
         }],
       },
     ],
-    document: [],
-    index: null,
-    subindex: 0,
+    document: {metadata:{title: "Juicy English Essay"}, content:[]},
     selected: null,
+    typeIndex: 0,
+    currentBlockIndex: null,
     special: null,
     menus: {
       selectedBlock: null,
@@ -174,3 +187,5 @@ export const state = new Vue({
     }
   }
 });
+
+export default state
