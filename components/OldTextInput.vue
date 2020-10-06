@@ -14,7 +14,7 @@
           color:${this.data.color};`
       ">
 			</textarea>
-      
+
 			<template #content>
 				<p>{{ data.name }}</p>
 			</template>
@@ -38,9 +38,8 @@ export default {
 
 <style scoped>
 textarea {
-	width: 80vw;
+	width: 100%;
 	background-color: transparent;
-	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1em;
 	border: none;
 	overflow: auto;
