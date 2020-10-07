@@ -3,13 +3,12 @@
 		<GlobalEvents @keydown.tab="onTab" />
 		<!-- Title -->
 		<p>Currently editing...</p>
-		{{ state.typeIndex }}
 		<input
 			class="disguised-input title is-3"
 			v-model="state.document.metadata.title"
 			placeholder="Your document's title"
 		/>
-
+  <div class="textContainer">
 		<!-- Writing Portion -->
 		<Draggable v-model="state.document.content" group="document yumyumu">
 			<BlockInput
@@ -42,6 +41,7 @@
 				{{ option.name }}
 			</p>
 		</section>
+  </div>
 	</div>
 </template>
 
@@ -137,7 +137,7 @@ export default {
 				}
 			} else {
 				// ELSE - add next type to doc state.document.content[state.currentBlockIndex]
-				let item = state.currentBlock.types[state.typeIndex];
+				let item = JSON.parse(JSON.stringify(state.currentBlock.types[state.typeIndex]));
 				item.content = "";
 				state.document.content[state.currentBlockIndex].push(item);
 				this.$buefy.toast.open({
@@ -182,5 +182,20 @@ export default {
 }
 .template-btn:hover {
 	transform: translate(25px, 0px);
+}
+.textContainer{
+  max-height: 70vh;
+  overflow-y:scroll;
+}
+.textContainer::-webkit-scrollbar
+{
+	width: 12px;
+	background-color: #F5F5F5;
+}
+
+.textContainer::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	background-color: #0A0A0A;
 }
 </style>

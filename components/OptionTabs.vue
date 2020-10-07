@@ -1,15 +1,18 @@
 <template>
   <div class="option-tabs section">
+    <style v-if="selectedTheme !== null">
+      {{selectedTheme}}
+    </style>
     <b-tabs>
        <b-tab-item label="Focus">
          <section v-if="state.selected !== null">
-           {{ state.selected.content }}
 							<h2 class="title">
 								{{ state.selected.name }}
 							</h2>
 							<p style="white-space: pre-wrap; text-align:left;">{{ state.selected.desc }}</p>
 							<br />
-							<b-collapse class="panel" animation="slide">
+              <b v-if="state.selected.starters.length == 0">No Templates Available</b>
+							<b-collapse v-else class="panel" animation="slide">
 							  <b-button :open="false" slot="trigger" type="is-light" class="subtitle">Templates</b-button>
 							  <section style="
 									max-height: 30vh;
@@ -77,38 +80,20 @@
 			</b-tab-item>
 			<b-tab-item label="Setup">
 				<section>
-					<h2 class="subtitle">Installed Blocks</h2>
-					<div
-						v-for="(block, i) in state.blocks"
-						:key="i"
-						class="add-block-card has-background-light level"
-						:style="` align-items: end;`"
-					>
-						<div class="level-left" style="width: 75%">
-							<div>
-								<h1 class="title is-4">{{ block.name }}</h1>
-								<h2 class="subtitle is-5">{{ block.desc }}</h2>
-							</div>
-						</div>
-
-						<div class="level-right m-2">
-							<b-button>Settings</b-button>
-						</div>
-					</div>
+					<h2 class="subtitle">Themes</h2>
+             <b-field
+            label="Theme">
+            <b-select v-model="selectedTheme" placeholder="Select a theme" expanded>
+                <option
+                    v-for="option in state.themes"
+                    :value="option.css"
+                    :key="option.name">
+                    {{ option.name }}
+                </option>
+            </b-select>
+            </b-field>
 				</section>
 				<br />
-				<section>
-					<h2 class="subtitle">Type Explorer</h2>
-					<div v-if="state.menus.selectedBlock !== null">
-						<p
-							v-for="(type, i) in state.menus.selectedBlock.types"
-							:key="`${type.name}-${i}`"
-							:style="`color: ${type.color};`"
-						>
-							{{ type.name }}
-						</p>
-					</div>
-				</section>
 			</b-tab-item>
 			<b-tab-item label="Marketplace">
 				<h1 class="title">Marketplace</h1>
@@ -132,6 +117,11 @@ import state from "../state/index.js";
 export default {
   computed: {
     state(){return state
+    }
+  },
+  data:function(){
+    return {
+    selectedTheme :null
     }
   },
   methods: {
