@@ -11,12 +11,14 @@
 		/>
 
 		<!-- Writing Portion -->
-		<BlockInput
-			v-for="(block, i) in state.document.content"
-			:key="i"
-			:block="block"
-			:index="i"
-		/>
+		<Draggable v-model="state.document.content" group="document yumyumu">
+			<BlockInput
+				v-for="(block, i) in state.document.content"
+				:key="i"
+				:block="block"
+				:index="i"
+			/>
+		</Draggable>
 
 		<section v-if="state.currentBlockIndex == null">
 			<h3 class="subtitle">Create a new..</h3>
@@ -45,6 +47,7 @@
 
 <script>
 import state from "../state";
+import Draggable from "vuedraggable";
 
 let staticIndex = 0;
 
@@ -65,7 +68,7 @@ export default {
 			state.special = null;
 		},
 		createNewBlock(block) {
-      console.log(block);
+			console.log(block);
 			//Reset indexs
 			state.typeIndex = 0;
 			let nextType = JSON.parse(
@@ -108,15 +111,16 @@ export default {
 					case "loop":
 						//Calc options
 						let options = [];
-						let last = state.currentBlock.types[
-							state.currentBlock.types[state.typeIndex].index
-						];
-						let next = state.currentBlock.types[state.typeIndex + 1];
+						let last =
+							state.currentBlock.types[
+								state.currentBlock.types[state.typeIndex].index
+							];
+						let next =
+							state.currentBlock.types[state.typeIndex + 1];
 
 						//Format to special
-						last.newIndex = state.currentBlock.types[
-							state.typeIndex
-						].index;
+						last.newIndex =
+							state.currentBlock.types[state.typeIndex].index;
 						next.newIndex = state.typeIndex + 1;
 						//Add to menu
 						options.push(last);
@@ -144,12 +148,7 @@ export default {
 			}
 		},
 	},
-	data() {
-		return {
-			special: null, //Handle special cases
-			currentBlock: null, // Stores current block DATA
-		};
-	},
+	components: { Draggable },
 };
 </script>
 

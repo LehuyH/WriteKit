@@ -6,9 +6,7 @@
 					<h2 class="title">
 						{{ state.selected.name }}
 					</h2>
-					<p style="white-space: pre-wrap; text-align: left">
-						{{ state.selected.desc }}
-					</p>
+					<p style="white-space: pre-wrap; text-align: left">{{ state.selected.desc }}</p>
 					<br />
 					<b-collapse class="panel" animation="slide">
 						<b-button
