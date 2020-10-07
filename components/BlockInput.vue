@@ -16,11 +16,11 @@ export default {
     computed:{ state(){return state} },
     methods:{
         handleFocus: function(type,i){
+
             state.selected = type;
-            state.currentBlockIndex = this.index;
-            if(state.newIndex){
-                state.typeIndex = state.newIndex;
-            }
+            state.selectionIndex.blockIndex = this.index;
+            state.selectionIndex.typeIndex = i;
+            console.log(state.selectionIndex)
 
         }
     }

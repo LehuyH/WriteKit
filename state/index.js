@@ -175,6 +175,10 @@ export const state = new Vue({
     typeIndex: 0,
     currentBlockIndex: null,
     special: null,
+    selectionIndex:{
+      blockIndex: null,
+      typeIndex: null,
+    },
     menus: {
       selectedBlock: null,
     },

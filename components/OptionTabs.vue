@@ -3,6 +3,7 @@
     <b-tabs>
        <b-tab-item label="Focus">
          <section v-if="state.selected !== null">
+           {{ state.document.content[state.selectionIndex.blockIndex][state.selectionIndex.typeIndex].content}}
 							<h2 class="title">
 								{{ state.selected.name }}
 							</h2>
@@ -142,10 +143,10 @@ export default {
     addBlock(type) {
       let newType = JSON.parse(JSON.stringify(type))
       newType.content =""
-       state.document.content[state.currentBlockIndex].push(newType);
+       state.document.content[state.selectionIndex.blockIndex].push(newType);
     },
     addText(text){
-      state.document.content[state.currentBlockIndex][state.typeIndex].content = `${text} ${state.document.content[state.currentBlockIndex][state.typeIndex].content}`
+      state.document.content[state.selectionIndex.blockIndex][state.selectionIndex.typeIndex].content = `${text} ${state.document.content[state.currentBlockIndex][state.typeIndex].content}`
     }
   },
 };

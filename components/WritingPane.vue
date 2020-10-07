@@ -57,7 +57,7 @@ export default {
       },
       createNewBlock(block) {
         //Reset indexs
-        this.typeIndex = 0
+        state.typeIndex = 0
         let nextType = JSON.parse(JSON.stringify(block.types[this.typeIndex]))
         nextType.content = ""
         state.document.content.push([nextType])
