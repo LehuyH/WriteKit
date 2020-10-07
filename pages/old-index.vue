@@ -10,21 +10,38 @@
 							<h2 class="title has-text-light">
 								{{ selected.name }}
 							</h2>
-							<p style="white-space: pre-wrap; text-align:left;">{{ selected.desc }}</p>
+							<p style="white-space: pre-wrap; text-align: left">
+								{{ selected.desc }}
+							</p>
 							<br />
 							<b-collapse class="panel" animation="slide">
-							  <b-button :open="false" slot="trigger" type="is-light" class="subtitle">Templates</b-button>
-							  <section style="
-									max-height: 30vh;
-									overflow-y: scroll;
-									overflow-x: hidden;
-								">
-							    <div @click="addText(starter)" v-for="(starter, i) in selected.starters" :key="`${i}`">
-							      <p class="light-link menu box has-background-black">
-							        {{ starter }}
-							      </p>
-							    </div>
-							  </section>
+								<b-button
+									:open="false"
+									slot="trigger"
+									type="is-light"
+									class="subtitle"
+									>Templates</b-button
+								>
+								<section
+									style="
+										max-height: 30vh;
+										overflow-y: scroll;
+										overflow-x: hidden;
+									"
+								>
+									<div
+										@click="addText(starter)"
+										v-for="(starter,
+										i) in selected.starters"
+										:key="`${i}`"
+									>
+										<p
+											class="light-link menu box has-background-black"
+										>
+											{{ starter }}
+										</p>
+									</div>
+								</section>
 							</b-collapse>
 						</section>
 					</b-tab-item>
@@ -84,15 +101,11 @@
 						<p class="subtitle has-text-light">
 							Installed Block Packs
 						</p>
-						<b-collapse
-							class="panel"
-							animation="slide"
-						>
+						<b-collapse class="panel" animation="slide">
 							<div
 								slot="trigger"
 								class="panel-heading"
 								role="button"
-								
 							>
 								<strong>Standard Essay Blocks</strong>
 							</div>
@@ -380,7 +393,7 @@ export default {
 				templateOpen: false,
 				box: false,
 				tooltip: false,
-				titles:false
+				titles: false,
 			},
 		};
 	},
@@ -393,14 +406,14 @@ export default {
 			//HANDLE NEW BLOCK
 			const currentBlock = this.blocks[this.index]; //Get the current block
 			//Do nothing if waiting for user to choose one
-				  if (this.index === null){ 
-					  this.$buefy.toast.open({
-				message: "Please choose a block",
-				type: "is-light",
-			});
-						  return
-						  }
-      
+			if (this.index === null) {
+				this.$buefy.toast.open({
+					message: "Please choose a block",
+					type: "is-light",
+				});
+				return;
+			}
+
 			//Move the type index up by one
 			this.subindex = this.subindex + 1;
 
