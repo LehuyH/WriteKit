@@ -170,7 +170,7 @@ export const state = new Vue({
         }],
       },
     ],
-    document: {metadata:{title: "Juicy English Essay"}, content:[]},
+    document: {metadata:{title: "Untitled Document"}, content:[]},
     selected: null,
     typeIndex: 0,
     currentBlockIndex: null,
@@ -181,18 +181,19 @@ export const state = new Vue({
     },
     menus: {
         selectedBlock: null,
+        export:false,
       },
       themes: [{
-          name: "default",
+          name: "Default",
           css: ""
         },
         {
-          name: "Dark Theme",
+          name: "Dark",
           css: "@import url('https://jenil.github.io/bulmaswatch/cyborg/bulmaswatch.min.css'); :root { --light: #2C2F33; }"
         },
         {
           name: "Purple",
-          css: "@import url('https://jenil.github.io/bulmaswatch/pulse/bulmaswatch.min.css'); .writing-pane{background: url('https://w.wallhaven.cc/full/4y/wallhaven-4y1rmx.jpg');background-repeat:no-repeat;background-position:center;background-size:cover;"
+          css: "@import url('https://jenil.github.io/bulmaswatch/pulse/bulmaswatch.min.css'); .writing-pane{background: url('https://w.wallhaven.cc/full/4y/wallhaven-4y1rmx.jpg');background-repeat:no-repeat;background-position:center;background-size:cover;color:white;}.docTitle{color:white};"
         },
         {
           name: "Lux",
@@ -202,10 +203,7 @@ export const state = new Vue({
           name: "Minty",
           css: "@import url('https://jenil.github.io/bulmaswatch/minty/bulmaswatch.min.css');"
         },
-        {
-          name: "Senko",
-          css:".writing-pane{background: url('https://c4.wallpaperflare.com/wallpaper/584/644/901/anime-anime-girls-sewayaki-kitsune-no-senko-san-hd-wallpaper-preview.jpg');background-repeat:no-repeat;background-position:center;background-size:cover;"
-        }
+
       ],
     settings: {
       borders: false,

@@ -2,9 +2,12 @@
 	<div class="writing-pane section">
 		<GlobalEvents @keydown.tab="onTab" />
 		<!-- Title -->
-		<p>Currently editing...</p>
+		<header class="level">
+		<p class="level-left">Currently editing...</p>
+		<b-button type="is-success" @click="toggleExport" class="level-right">Export</b-button>
+		</header>
 		<input
-			class="disguised-input title is-3"
+			class="disguised-input title is-3 docTitle"
 			v-model="state.document.metadata.title"
 			placeholder="Your document's title"
 		/>
@@ -49,6 +52,7 @@
 import state from "../state";
 import Draggable from "vuedraggable";
 
+
 let staticIndex = 0;
 
 export default {
@@ -58,6 +62,9 @@ export default {
 		},
 	},
 	methods: {
+		toggleExport(){
+			state.menus.export = !state.menus.export
+		},
 		handleOption(option) {
 			console.log(option);
 			let newType = JSON.parse(JSON.stringify(option));

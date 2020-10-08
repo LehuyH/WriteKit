@@ -4,13 +4,13 @@
 			<h2 v-if="state.settings.titles" class="subtitle">
 				{{ type.name }}
 			</h2>
-			<textarea
+			<textarea-autosize
 				v-model="type.content"
 				:class="{ 'disguised-input': true }"
 				:placeholder="type.prompt"
 				:style="`color:${type.color};`"
-				@focus="handleFocus(type, i)"
-			></textarea>
+				@focus.native="handleFocus(type, i)"
+			></textarea-autosize>
 		</section>
 	</div>
 </template>
@@ -26,10 +26,9 @@ export default {
             state.selected = type;
             state.selectionIndex.blockIndex = this.index;
             state.selectionIndex.typeIndex = i;
-            console.log(state.selectionIndex)
 
         }
-    }
+	}
     
 }
 </script>

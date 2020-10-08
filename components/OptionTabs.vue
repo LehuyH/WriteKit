@@ -1,10 +1,8 @@
 <template>
   <div class="option-tabs section">
-    <style v-if="selectedTheme !== null">
-      {{selectedTheme}}
-    </style>
     <b-tabs>
-       <b-tab-item label="Focus">
+       <b-tab-item label="Insights">
+		
          <section v-if="state.selected !== null">
 							<h2 class="title">
 								{{ state.selected.name }}
@@ -26,7 +24,8 @@
 							    </div>
 							  </section>
 							</b-collapse>
-						</section>
+		</section>
+		<p v-else>You Got This!</p>
 			</b-tab-item>
 			<b-tab-item label="Explorer">
 				<b-collapse
@@ -83,7 +82,7 @@
 					<h2 class="subtitle">Themes</h2>
              <b-field
             label="Theme">
-            <b-select v-model="selectedTheme" placeholder="Select a theme" expanded>
+            <b-select v-model="selectedTheme" @input="changeTheme" placeholder="Select a theme" expanded>
                 <option
                     v-for="option in state.themes"
                     :value="option.css"
@@ -125,9 +124,20 @@ export default {
     }
   },
   methods: {
+	changeTheme(e){
+		let style = document.getElementById("GLOBAL_STYLE")
+		if(style == null){
+			let temp = document.createElement("style")
+			temp.setAttribute('id', 'GLOBAL_STYLE');
+			document.querySelector("head").appendChild(temp)
+			 style = document.getElementById("GLOBAL_STYLE")
+		}
+		style.innerText = e
+	  },
     addBlock(type) {
       let newType = JSON.parse(JSON.stringify(type))
-      newType.content =""
+	  newType.content =""
+	  console.log(state.document.content[state.selectionIndex.blockIndex])
        state.document.content[state.selectionIndex.blockIndex].push(newType);
     },
     addText(text){
