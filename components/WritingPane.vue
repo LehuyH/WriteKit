@@ -99,6 +99,14 @@ export default {
 				return;
 			}
 
+			if (state.special !== null) {
+				this.$buefy.toast.open({
+					message: "Please choose a type",
+					type: "is-light",
+				});
+				return;
+			}
+
 			//Move the type index up by one
 			console.log(state.currentBlockIndex);
 			state.typeIndex = state.typeIndex + 1;
@@ -156,6 +164,11 @@ export default {
 		},
 	},
 	components: { Draggable },
+	mounted: async function() {
+		await this.$localForage.setItem("test", "helo")
+		let item = await this.$localForage.getItem("test")
+		console.log(item)
+	}
 };
 </script>
 

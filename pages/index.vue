@@ -7,7 +7,9 @@
               <h1 class="title text-pop-up-top" style="font-size:8rem">WriteKit</h1>
               <h2 class="subtitle">A powerful, flexible, and simple block based document editor.</h2>
               <br>
+               <nuxt-link to="/documents">
               <b-button type="is-primary is-light">My Documents</b-button>
+               </nuxt-link>
               <nuxt-link to="/editor">
               <b-button type="is-primary">Launch Demo!</b-button>
               </nuxt-link>  
@@ -22,6 +24,7 @@
     <div class="my-6 container has-text-centered">
         <h2 class="title">What is WriteKit?</h2>
         <p class="subtitle" style="margin-left:20%;margin-right:20%;">Writekit is a document editor that makes the process of writing more approachable and enjoyable. <br><br> With WriteKit, you can create an outline in seconds. WriteKit will recognize your structure and will provide helpful insights as you write. <br><br> Create a new document and bring your ideas to life in a more intuitive and natural way.</p>
+        <br><br>
         <div class="columns">
             <section class="column">
                 Make writing more approachable with WriteKit's block system.

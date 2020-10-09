@@ -36,6 +36,7 @@ export default {
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
     '@nuxtjs/pwa',
+    '@nuxtjs/localforage',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -48,12 +49,17 @@ export default {
   build: {
   },
   pwa: {
-    icon: false, // disables the icon module
+    icon:{
+      iconSrc: './assets/icon.png'
+    },
     manifest: {
       name: 'WriteKit',
       lang: 'en',
+      theme_color: '#00CEC9',
+      start_url:'/documents',
       description:'A powerful, flexible, and simple block based document editor.',
       useWebmanifestExtension: false
     }
-  }
+  },
+  
 }
