@@ -1,11 +1,18 @@
 <template>
     <div class="background">
         <div class="section container">
-            <section class="box">
-                <div v-if="blockPack">
-                    <h1 class="title"></h1>
+            <section class="box has-text-centered">
+                <div v-if="item">
+                    <h1 class="title">Install {{item.name}}</h1>
+                    <h2 class="subtitle">Published by {{item.author}}</h2>
+                    <br>
+                    <p> {{item.desc}}</p>
+                    <br>
+                    <b-button class="is-success" @click="install" :disabled="didClick">Install</b-button>
+                    
                 </div>
                 <div v-else-if="error">
+                  <p>{{error}}</p>
                 </div>
                 <div v-else>
                     <div class="sk-folding-cube">
@@ -16,11 +23,14 @@
                     </div>
                 </div>
             </section>
+            <nuxt-link to="/documents"><a>Home</a></nuxt-link>
         </div>
     </div>
 </template>
  
 <script>
+import axios from "axios"
+import state from "../../../state"
 export default {
     computed: {
         type() { return this.$route.params.type },
@@ -28,9 +38,40 @@ export default {
     },
     data(){
         return{
-            blockPack: false,
-            error:false
+            item: false,
+            error:false,
+            didClick:false
         }
+    },
+    methods: {
+      async install(){
+        this.didClick = true
+        //resolve theme
+        if(this.type == "theme"){
+          let theme = await axios.get(this.item.theme)
+          this.item.theme = theme.data
+          console.log(this.item)
+          let install = await state.installTheme(this.item)
+          if(install){
+            this.$buefy.toast.open("Installed!")
+          }else{
+            this.$buefy.toast.open("Could not install theme, please try again later")
+         
+          }
+        }
+
+      }
+    },
+    async mounted() {
+      const itemRes = await axios.post(`${window.location.protocol}//${window.location.host}/.netlify/functions/get-${this.type}`,{
+        id: this.$route.params.id
+      })
+      
+      if(itemRes.data.success){
+        this.item = itemRes.data.data
+      }else{
+        this.error = itemRes.data.error
+      }
     }
 }
 </script>
@@ -39,6 +80,9 @@ export default {
 .background {
     background-image: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
     height: 100vh;
+}
+.box{
+  height: auto;
 }
 .sk-folding-cube {
   margin: 20px auto;

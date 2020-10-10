@@ -101,7 +101,7 @@ export const state = new Vue({
       }
 
       //Make sure they don't install the same 
-      if(data.themes.find(t => t == theme) !== undefined){
+      if(data.themes.find(t => t.name == theme.name) !== undefined){
         return false;
       }
 

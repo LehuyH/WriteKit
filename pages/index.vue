@@ -63,9 +63,7 @@
 <script>
 import state from "../state"
 export default {
-  mounted(){
-    console.log(JSON.stringify(state.blocks))
-  }
+
 }
 </script>
 
