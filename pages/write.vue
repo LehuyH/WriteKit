@@ -3,7 +3,6 @@
 		<div class="hero is-primary">
 			<div class="hero-body">
 				<h1 class="title is-1">WriteKit</h1>
-				<nuxt-link to="/dashboard"> <b-button type="is-light">Home</b-button> </nuxt-link>
 			</div>
 		</div>
 		<b-modal v-model="state.menus.export" :width="640" scroll="keep">
@@ -17,8 +16,8 @@
 							</b-button>
 						</p>
 						<p class="control">
-							<b-button type="is-success">
-								MS Word (.docx)
+							<b-button tag="a" type="is-success" :href="downloadAsMarkdownURL" :download="`${state.document.metadata.title}.md`">
+								Markdown (.md)
 							</b-button>
 						</p>
 						<p class="control">
@@ -48,6 +47,15 @@ export default {
 		},
 		downloadAsWriteKitURL() {
 			return `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(state.document))}`;
+		},
+		downloadAsMarkdownURL() {
+			let finalData = `# ${state.document.metadata.title}\n\n`
+
+			state.document.content.forEach(block => block.forEach(type => {
+				finalData += `## ${type.name}\n\n${type.content}\n\n`;
+			}));
+
+			return `data:text/markdown;charset=utf-8,${encodeURIComponent(finalData)}`
 		}
 	},
 	mounted() {
