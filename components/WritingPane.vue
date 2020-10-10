@@ -188,6 +188,7 @@ export default {
 .writing-pane {
 	flex: 2;
 	background: var(--light);
+	height: 80vh;
 }
 
 .disguised-input {

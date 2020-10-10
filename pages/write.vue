@@ -7,25 +7,26 @@
 			</div>
 		</div>
 		<b-modal v-model="state.menus.export" :width="640" scroll="keep">
-			<div class="card">
-				<div class="card-header">
-					<h1 class="title card-header-title">Export Document</h1>
-				</div>
-				<div class="card-content">
-					<div class="content">
-						<textarea
-							class="disguised-input"
-							style="min-height: 7vh"
-							:value="
-								state.document.content
-									.map((block) =>
-										block.map((e) => e.content).join(' ')
-									)
-									.join(`\n`)
-							"
-						></textarea>
+			<div class="box section has-text-centered">
+					<h1 class="title">Export Document</h1>
+
+					<div class="field has-addons" style="justify-content: center;">
+						<p class="control">
+							<b-button tag="a" type="is-primary" :href="downloadAsTextURL" :download="`${state.document.metadata.title}.txt`">
+								Plain Text (.txt)
+							</b-button>
+						</p>
+						<p class="control">
+							<b-button type="is-success">
+								MS Word (.docx)
+							</b-button>
+						</p>
+						<p class="control">
+							<b-button type="is-warning">
+								WriteKit (.wkdoc)
+							</b-button>
+						</p>
 					</div>
-				</div>
 			</div>
 		</b-modal>
 		<section class="main-content">
@@ -42,12 +43,20 @@ export default {
 		state() {
 			return state;
 		},
+		downloadAsTextURL() {
+			return `data:text/plain;charset=utf-8,${this.stitchContent(state.document.metadata.title, state.document.content)}`;
+		}
 	},
 	mounted() {
 		if (!("user" in state) | !state.user.documents) {
 			this.$router.push("/documents");
 		}
 		state.document = state.user.documents[state.selectedDocument];
+	},
+	methods: {
+		stitchContent(title, content) {
+			return `${title.trim()}\n\n${content.map((block) => block.map((e) => e.content).join(" ")).join("\n\n")}`;
+		},
 	}
 };
 </script>

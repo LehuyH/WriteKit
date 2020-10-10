@@ -44,6 +44,7 @@ export default {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
   },
+  
   pwa: {
     icon:{
       iconSrc: './assets/icon.png'
@@ -57,5 +58,8 @@ export default {
       useWebmanifestExtension: false
     }
   },
+  generate: {
+    fallback: true
+  } 
   
 }
