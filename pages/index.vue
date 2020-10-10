@@ -18,7 +18,7 @@
 							document editor.
 						</h2>
 						<br />
-						<nuxt-link to="/documents">
+						<nuxt-link to="/dashboard">
 							<b-button type="is-primary is-light"
 								>My Documents</b-button
 							>

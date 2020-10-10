@@ -9,6 +9,31 @@
 			</div>
 		</div>
 
+		<div class="section">
+			<h1 class="title is-4">Import Pack</h1>
+			<form @submit.prevent="importBlockPack" class="field has-addons">
+				<p class="control">
+					<b-select
+						v-model="selectedPack"
+						placeholder="Select a Block Pack"
+					>
+						<option
+							v-for="(option, i) in state.user.data.blockPacks"
+							:value="option"
+							:key="`bp-${i}`"
+						>
+							{{ option.name }}
+						</option>
+					</b-select>
+				</p>
+				<p class="control">
+					<b-button type="is-info" native-type="submit" extended
+						>Import Pack</b-button
+					>
+				</p>
+			</form>
+		</div>
+
 		<form @submit.prevent="createBlockPack" class="section">
 			<h1 class="title is-4">Pack Name</h1>
 			<b-field label="Name">
@@ -40,7 +65,7 @@
 
 			<h1 class="title is-4">Blocks</h1>
 
-			<b-field>
+			<div class="field has-addons">
 				<p class="control">
 					<b-button type="is-success" @click="addBlock"
 						>Create block</b-button
@@ -51,105 +76,100 @@
 						>Install Pack</b-button
 					>
 				</p>
-				<br />
 
-				<form @submit.prevent="importBlockPack">
-					<b-button type="is-info" native-type="submit" extended
-						>Import Pack</b-button
+				<p class="control">
+					<b-button
+						type="is-primary"
+						tag="a"
+						:href="downloadURL"
+						:download="`${pack.name || `new-pack`}.wk`"
 					>
-					<b-select
-						v-model="selectedPack"
-						placeholder="Select a Block Pack"
-					>
-						<option
-							v-for="(option, i) in state.user.data.blockPacks"
-							:value="option"
-							:key="`bp-${i}`"
-						>
-							{{ option.name }}
-						</option>
-					</b-select>
-				</form>
-			</b-field>
+						Download Pack
+					</b-button>
+				</p>
+			</div>
 			<br />
 
-			<div
-				v-for="block in pack.blocks"
-				:key="block.staticIndex"
-				class="box editor-box"
-			>
-				<input
-					class="input title is-5 title-input"
-					placeholder="Block Title"
-					v-model="block.name"
-				/>
-
-				<h4 class="title is-5">Types</h4>
-
-				<b-button
-					type="is-success"
-					@click="addTypeTo(block.staticIndex)"
-					>Add type</b-button
+			<Draggable v-model="pack.blocks">
+				<div
+					v-for="block in pack.blocks"
+					:key="block.staticIndex"
+					class="box editor-box"
 				>
-				<br /><br />
+					<input
+						class="input title is-5 title-input"
+						placeholder="Block Title"
+						v-model="block.name"
+					/>
 
-				<section
-					class="type-editor"
-					v-for="(type, i) in block.types"
-					:key="i"
-				>
-					<div>
-						<input
-							class="input title is-6 title-input"
-							placeholder="Type Title"
-							v-model="type.name"
-						/>
-					</div>
+					<h4 class="title is-5">Types</h4>
 
-					<div class="columns">
-						<div class="column">
-							<h4 class="subtitle is-6">Description</h4>
-							<textarea-autosize
-								class="input"
-								placeholder="Describe your block."
-								v-model="type.desc"
+					<b-button
+						type="is-success"
+						@click="addTypeTo(block.staticIndex)"
+						>Add type</b-button
+					>
+					<br /><br />
+
+					<section
+						class="type-editor"
+						v-for="(type, i) in block.types"
+						:key="i"
+					>
+						<div>
+							<input
+								class="input title is-6 title-input"
+								placeholder="Type Title"
+								v-model="type.name"
 							/>
 						</div>
 
-						<div class="column">
-							<h4 class="subtitle is-6">Prompt</h4>
-							<textarea-autosize
-								class="input"
-								placeholder="Provide a starting point, how do we use it?"
-								v-model="type.prompt"
-							/>
-						</div>
-					</div>
+						<div class="columns">
+							<div class="column">
+								<h4 class="subtitle is-6">Description</h4>
+								<textarea-autosize
+									class="input"
+									placeholder="Describe your block."
+									v-model="type.desc"
+								/>
+							</div>
 
-					<div class="columns">
-						<div class="column">
-							<h4 class="subtitle is-6">Accent Color</h4>
-							<input type="color" v-model="type.color" />
+							<div class="column">
+								<h4 class="subtitle is-6">Prompt</h4>
+								<textarea-autosize
+									class="input"
+									placeholder="Provide a starting point, how do we use it?"
+									v-model="type.prompt"
+								/>
+							</div>
 						</div>
 
-						<div class="column">
-							<h4 class="subtitle is-6">Templates</h4>
-							<textarea-autosize
-								class="input"
-								placeholder="Separate your templates by a newline (hit ENTER/RETURN)."
-								v-model="type.starters"
-							/>
+						<div class="columns">
+							<div class="column">
+								<h4 class="subtitle is-6">Accent Color</h4>
+								<input type="color" v-model="type.color" />
+							</div>
+
+							<div class="column">
+								<h4 class="subtitle is-6">Templates</h4>
+								<textarea-autosize
+									class="input"
+									placeholder="Separate your templates by a newline (hit ENTER/RETURN)."
+									v-model="type.starters"
+								/>
+							</div>
 						</div>
-					</div>
-				</section>
-			</div>
+					</section>
+				</div>
+			</Draggable>
 		</form>
 	</div>
 </template>
 
 <script>
 let staticIndex = -1;
-import state from "../state";
+import Draggable from "vuedraggable";
+import state from "@/state";
 export default {
 	data() {
 		return {
@@ -176,6 +196,11 @@ export default {
 					})),
 				})),
 			};
+		},
+		downloadURL() {
+			return `data:application/json;charset=utf-8,${encodeURIComponent(
+				JSON.stringify(this.finalPack)
+			)}`;
 		},
 		state: () => state,
 	},
@@ -224,6 +249,7 @@ export default {
 			});
 		},
 	},
+	components: { Draggable },
 };
 </script>
 

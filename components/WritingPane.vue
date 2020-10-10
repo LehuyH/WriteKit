@@ -26,17 +26,16 @@
 			<!-- Writing Portion -->
 			<Draggable
 				v-model="state.document.content"
-				group="document yumyumu"
+				group="document"
 			>
 				<BlockInput
 					v-for="(block, i) in state.document.content"
 					:key="i"
-					:block="block"
 					:index="i"
 				/>
 			</Draggable>
 
-			<section v-if="state.currentBlockIndex == null">
+			<section v-if="state.currentBlockIndex == null || state.document.content.length == 0">
 				<h3 class="subtitle">Create a new..</h3>
 				<p
 					v-for="(block, i) in state.blocks"

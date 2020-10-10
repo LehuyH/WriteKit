@@ -52,7 +52,7 @@ export default {
       name: 'WriteKit',
       lang: 'en',
       theme_color: '#00CEC9',
-      start_url:'/documents',
+      start_url:'/dashboard',
       description:'A powerful, flexible, and simple block based document editor.',
       useWebmanifestExtension: false
     }

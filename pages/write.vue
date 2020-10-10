@@ -3,7 +3,7 @@
 		<div class="hero is-primary">
 			<div class="hero-body">
 				<h1 class="title is-1">WriteKit</h1>
-				<nuxt-link to="/documents"> <b-button type="is-light">Home</b-button> </nuxt-link>
+				<nuxt-link to="/dashboard"> <b-button type="is-light">Home</b-button> </nuxt-link>
 			</div>
 		</div>
 		<b-modal v-model="state.menus.export" :width="640" scroll="keep">

@@ -5,7 +5,7 @@
         </div>
 
         <div class="level-right">
-            <nuxt-link to="/documents">My Documents</nuxt-link>
+            <nuxt-link to="/dashboard">My Dashboard</nuxt-link>
             <nuxt-link to="/build">Build a Block</nuxt-link>
         </div>
     </nav>

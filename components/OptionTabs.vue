@@ -83,8 +83,8 @@
 				<section>
 					<h2 class="subtitle">Visuals</h2>
 					<div class="field">
-						<b-switch v-model="state.settings.borders"
-							>Borders</b-switch
+						<b-switch v-model="state.settings.delete"
+							>Show Delete</b-switch
 						>
 					</div>
 					<div class="field">
@@ -106,9 +106,9 @@
 							expanded
 						>
 							<option
-								v-for="option in state.themes"
+								v-for="(option,i) in state.themes"
 								:value="option.theme"
-								:key="option.name"
+								:key="`themesel-${i}`"
 							>
 								{{ option.name }}
 							</option>

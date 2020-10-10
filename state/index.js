@@ -6,6 +6,17 @@ import blockPacks from "@/assets/default-blockpacks.json";
 
 export const state = new Vue({
   methods: {
+  
+    async deleteBlock(index) {
+      //Confirm it exists
+      if (this.document.content[index] == undefined) {
+        return false;
+      }
+
+      this.document.content = this.document.content.filter((d, i) => i !== index);
+
+      return true;
+    },
     async createDocument(){
         let user = await localForage.getItem("user");
         //User exists?

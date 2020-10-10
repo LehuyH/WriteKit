@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </section>
-            <nuxt-link to="/documents"><a>Home</a></nuxt-link>
+            <nuxt-link to="/dashboard"><a>Home</a></nuxt-link>
         </div>
     </div>
 </template>
@@ -50,7 +50,6 @@ export default {
         if(this.type == "theme"){
           let theme = await axios.get(this.item.theme)
           this.item.theme = theme.data
-          console.log(this.item)
           let install = await state.installTheme(this.item)
           if(install){
             this.$buefy.toast.open("Installed!")
