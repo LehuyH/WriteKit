@@ -165,9 +165,15 @@ export default {
 	},
 	components: { Draggable },
 	mounted: async function() {
-		await this.$localForage.setItem("test", "helo")
-		let item = await this.$localForage.getItem("test")
-		console.log(item)
+		let user = await this.$localForage.getItem("user")
+		
+		//Create user if not made
+		if(user == null){
+			user = {
+                documents: []
+            }
+            await this.$localForage.setItem("user", user)
+		}
 	}
 };
 </script>
