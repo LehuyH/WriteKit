@@ -2,9 +2,6 @@ export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
 
-  // Target (https://go.nuxtjs.dev/config-target)
-  target: 'static',
-
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
     title: 'writekit',
@@ -35,8 +32,7 @@ export default {
 
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
-    '@nuxtjs/pwa',
-    '@nuxtjs/localforage',
+    '@nuxtjs/pwa'
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)

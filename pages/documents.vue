@@ -15,7 +15,7 @@ export default {
         //Default user if it does not exist
 		if(user == null){
             user = {
-                documents: []
+                documents: [{metadata:{title: "Untitled Document"}, content:[]}]
             }
             await this.$localForage.setItem("user", user)
         }

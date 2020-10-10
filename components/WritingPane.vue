@@ -3,55 +3,68 @@
 		<GlobalEvents @keydown.tab="onTab" />
 		<!-- Title -->
 		<header class="level">
-		<p class="level-left">Currently editing...</p>
-		<b-button type="is-success" @click="toggleExport" class="level-right">Export</b-button>
+			<p class="level-left">Currently editing...</p>
+			<section class="level-right">
+			<b-button
+				type="is-primary"
+				@click="saveDoc"
+				>Save</b-button
+			>
+			<b-button
+				type="is-success"
+				@click="toggleExport"
+				>Export</b-button
+			>
+			</section>
 		</header>
 		<input
 			class="disguised-input title is-3 docTitle"
 			v-model="state.document.metadata.title"
 			placeholder="Your document's title"
 		/>
-  <div class="textContainer">
-		<!-- Writing Portion -->
-		<Draggable v-model="state.document.content" group="document yumyumu">
-			<BlockInput
-				v-for="(block, i) in state.document.content"
-				:key="i"
-				:block="block"
-				:index="i"
-			/>
-		</Draggable>
+		<div class="textContainer">
+			<!-- Writing Portion -->
+			<Draggable
+				v-model="state.document.content"
+				group="document yumyumu"
+			>
+				<BlockInput
+					v-for="(block, i) in state.document.content"
+					:key="i"
+					:block="block"
+					:index="i"
+				/>
+			</Draggable>
 
-		<section v-if="state.currentBlockIndex == null">
-			<h3 class="subtitle">Create a new..</h3>
-			<p
-				v-for="(block, i) in state.blocks"
-				:key="i"
-				@click="createNewBlock(block)"
-				class="link"
-			>
-				{{ block.name }}
-			</p>
-		</section>
-		<section v-if="state.special !== null">
-			<h3 class="subtitle">What's next?</h3>
-			<p
-				v-for="(option, i) in state.special.options"
-				:key="`${option.name}%${i}`"
-				class="link"
-				@click="handleOption(option)"
-			>
-				{{ option.name }}
-			</p>
-		</section>
-  </div>
+			<section v-if="state.currentBlockIndex == null">
+				<h3 class="subtitle">Create a new..</h3>
+				<p
+					v-for="(block, i) in state.blocks"
+					:key="i"
+					@click="createNewBlock(block)"
+					class="link"
+				>
+					{{ block.name }}
+				</p>
+			</section>
+			<section v-if="state.special !== null">
+				<h3 class="subtitle">What's next?</h3>
+				<p
+					v-for="(option, i) in state.special.options"
+					:key="`${option.name}%${i}`"
+					class="link"
+					@click="handleOption(option)"
+				>
+					{{ option.name }}
+				</p>
+			</section>
+		</div>
 	</div>
 </template>
 
 <script>
 import state from "../state";
 import Draggable from "vuedraggable";
-
 
 let staticIndex = 0;
 
@@ -62,8 +75,15 @@ export default {
 		},
 	},
 	methods: {
-		toggleExport(){
-			state.menus.export = !state.menus.export
+		saveDoc(){
+			let save = state.saveDoc()
+				this.$buefy.toast.open({
+					message: "Saved",
+					type: "is-success",
+				});
+		},
+		toggleExport() {
+			state.menus.export = !state.menus.export;
 		},
 		handleOption(option) {
 			console.log(option);
@@ -152,7 +172,9 @@ export default {
 				}
 			} else {
 				// ELSE - add next type to doc state.document.content[state.currentBlockIndex]
-				let item = JSON.parse(JSON.stringify(state.currentBlock.types[state.typeIndex]));
+				let item = JSON.parse(
+					JSON.stringify(state.currentBlock.types[state.typeIndex])
+				);
 				item.content = "";
 				state.document.content[state.currentBlockIndex].push(item);
 				this.$buefy.toast.open({
@@ -164,17 +186,11 @@ export default {
 		},
 	},
 	components: { Draggable },
-	mounted: async function() {
-		let user = await this.$localForage.getItem("user")
-		
-		//Create user if not made
-		if(user == null){
-			user = {
-                documents: []
-            }
-            await this.$localForage.setItem("user", user)
-		}
-	}
+	created: async function () {
+		const temp = await state.getUser()
+		const res = await state.selectDoc()
+		console.log(temp)
+	},
 };
 </script>
 
@@ -209,19 +225,17 @@ export default {
 .template-btn:hover {
 	transform: translate(25px, 0px);
 }
-.textContainer{
-  max-height: 70vh;
-  overflow-y:scroll;
+.textContainer {
+	max-height: 70vh;
+	overflow-y: scroll;
 }
-.textContainer::-webkit-scrollbar
-{
+.textContainer::-webkit-scrollbar {
 	width: 12px;
-	background-color: #F5F5F5;
+	background-color: #f5f5f5;
 }
 
-.textContainer::-webkit-scrollbar-thumb
-{
+.textContainer::-webkit-scrollbar-thumb {
 	border-radius: 10px;
-	background-color: #0A0A0A;
+	background-color: #0a0a0a;
 }
 </style>
