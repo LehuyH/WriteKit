@@ -45,7 +45,7 @@
 					@click="addTypeTo(block.staticIndex)"
 					>Add type</b-button
 				>
-				<br><br>
+				<br><br>         
 
 				<section
 					class="type-editor"
