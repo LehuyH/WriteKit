@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-if="state.user && state.user.data">
 		<div class="hero is-success">
 			<div class="hero-body">
 				<h1 class="title is-1">WriteKit Build</h1>
@@ -12,20 +12,43 @@
 		<form @submit.prevent="createBlockPack" class="section">
 			<h1 class="title is-4">Pack Name</h1>
 			<b-field>
-				<b-input
-					v-model="pack.name"
-					placeholder="What is your block pack called?"
-				/>
+				<b-input v-model="pack.name" placeholder="What is your block pack called?" />
 			</b-field>
+			<b-field>
+				<b-input v-model="pack.author" placeholder="What is your name?" />
+			</b-field>
+			<b-field>
+				<b-input v-model="pack.version" placeholder="What is the block pack version?" />
+			</b-field>
+			<textarea-autosize class="input" placeholder="Block pack description" v-model="pack.desc" />
 			<br />
 
 			<h1 class="title is-4">Blocks</h1>
 
-			<b-button type="is-success" @click="addBlock"
-				>Create block</b-button
-			>
+			<b-field>
+				<p class="control">
+					<b-button type="is-success" @click="addBlock"
+						>Create block</b-button
+					>
+				</p>
+				<p class="control">
+					<b-button type="is-warning" @click="installBlock"
+						>Install Pack</b-button
+					>
+				</p>
+				<br />
 
-			<br /><br />
+					<form @submit.prevent="importBlockPack"> 
+						 <b-select v-model="selectedPack" placeholder="Select a Block Pack">
+						 	<option v-for="(option,i) in state.user.data.blockPacks" :value="option" :key="`bp-${i}`">
+						 		{{ option.name }}
+						 	</option>
+						 </b-select>
+					<b-button type="is-info" native-type="submit">import Pack</b-button>
+					</form>
+
+			</b-field>
+			<br />
 
 			<div
 				v-for="block in pack.blocks"
@@ -35,7 +58,7 @@
 				<input
 					class="input title is-5 title-input"
 					placeholder="Block Title"
-					v-model="block.title"
+					v-model="block.name"
 				/>
 
 				<h4 class="title is-5">Types</h4>
@@ -45,7 +68,7 @@
 					@click="addTypeTo(block.staticIndex)"
 					>Add type</b-button
 				>
-				<br><br>         
+				<br /><br />
 
 				<section
 					class="type-editor"
@@ -56,7 +79,7 @@
 						<input
 							class="input title is-6 title-input"
 							placeholder="Type Title"
-							v-model="type.title"
+							v-model="type.name"
 						/>
 					</div>
 
@@ -66,7 +89,7 @@
 							<textarea-autosize
 								class="input"
 								placeholder="Describe your block."
-								v-model="type.description"
+								v-model="type.desc"
 							/>
 						</div>
 
@@ -91,7 +114,7 @@
 							<textarea-autosize
 								class="input"
 								placeholder="Separate your templates by a newline (hit ENTER/RETURN)."
-								v-model="type.templates"
+								v-model="type.starters"
 							/>
 						</div>
 					</div>
@@ -103,21 +126,63 @@
 
 <script>
 let staticIndex = -1;
+import state from "../state";
 export default {
 	data() {
 		return {
+			selectedPack: null,
 			pack: {
-				name: null,
+				name: "",
+				desc: "",
+				version: "",
 				blocks: [],
 			},
 		};
 	},
+	computed: {
+		finalPack() {
+			return {
+				name: this.pack.name,
+				desc: this.pack.desc,
+				version: this.pack.version,
+				blocks: this.pack.blocks.map((block) => ({
+					name: block.name,
+					types: block.types.map((type) => ({
+						...type,
+						starters: type.starters.split("\n"),
+					})),
+				})),
+			};
+		},
+		state: () => state
+	},
 	methods: {
+		importBlockPack(){
+			if(this.selectedPack !== null){
+				let pack = this.selectedPack
+				pack.blocks = pack.blocks.map(b => ({ 
+					...b, 
+					types: b.types.map(t => ({ 
+						...t, starters: t.starters.join("\n") 
+					})) 
+				}));
+			this.pack = pack
+			this.selectedPack = null
+			}
+		},
+		async installBlock() {
+			let res = await state.installBlockPack(this.finalPack);
+			if (res) {
+				this.$buefy.toast.open("Installed Pack Locally!");
+			} else {
+				this.$buefy.toast.open("Could not install, try again");
+			}
+		},
 		addBlock() {
 			staticIndex++;
 			this.pack.blocks.push({
 				staticIndex,
-				title: "New Block",
+				name: "New Block",
 				types: [],
 			});
 		},
@@ -126,11 +191,11 @@ export default {
 				(block) => block.staticIndex === index
 			);
 			this.pack.blocks[i].types.push({
-				title: "New Type",
-				description: "a new description",
+				name: "New Type",
+				desc: "a new description",
 				prompt: "a brand-new prompt",
 				color: "#000000",
-				templates: "Template 1\nTemplate 2",
+				starters: "Template 1\nTemplate 2",
 			});
 		},
 	},
@@ -146,7 +211,7 @@ export default {
 	background: rgb(54, 57, 63);
 }
 
-input[type=color] {
+input[type="color"] {
 	transform: scale(2) translateX(0.75rem);
 }
 

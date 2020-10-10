@@ -2,6 +2,17 @@
 	<Nuxt />
 </template>
 
+<script>
+import state from "@/state";
+export default {
+	created: async function () {
+		const temp = await state.getUser()
+		const res = await state.selectDoc()
+		console.log(temp)
+	},
+}
+</script>
+
 <style>
 /* Vars */
 :root {

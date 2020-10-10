@@ -6,9 +6,7 @@
 					<h2 class="title">
 						{{ state.selected.name }}
 					</h2>
-					<p style="white-space: pre-wrap; text-align: left">
-						{{ state.selected.desc }}
-					</p>
+					<p style="white-space: pre-wrap; text-align: left">{{ state.selected.desc }}</p>
 					<br />
 					<b v-if="state.selected.starters.length == 0"
 						>No Templates Available</b
@@ -122,10 +120,10 @@
 				<h1 class="title">Marketplace</h1>
 				<br>
 				<section v-if="isOnline">
-					<b-button size="is-medium" type="is-primary" icon-left="format-align-center">
+					<b-button size="is-medium" type="is-primary"  @click="load('bp')" icon-left="format-align-center">
 						 Search for Block Packs
 					 </b-button>
-					 <b-button size="is-medium" type="is-primary" icon-left="palette">
+					 <b-button size="is-medium" type="is-primary"  @click="load('t')"  icon-left="palette">
 						 Search for Themes
 					 </b-button>
 				</section>
@@ -168,20 +166,23 @@ export default {
 		addBlock(type) {
 			let newType = JSON.parse(JSON.stringify(type));
 			newType.content = "";
-			console.log(
-				state.document.content[state.selectionIndex.blockIndex]
-			);
+			if(state.document.content[state.selectionIndex.blockIndex]){
 			state.document.content[state.selectionIndex.blockIndex].push(
 				newType
 			);
+			}
 		},
 		addText(text) {
+			if(state.document.content[state.selectionIndex.blockIndex] && state.document.content[state.selectionIndex.blockIndex][state.selectionIndex.typeIndex]){
 			state.document.content[state.selectionIndex.blockIndex][
 				state.selectionIndex.typeIndex
 			].content = `${text} ${
 				state.document.content[state.currentBlockIndex][state.typeIndex]
 					.content
 			}`;
+			}else{
+
+			}
 		},
 	},
 };

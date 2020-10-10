@@ -43,6 +43,9 @@ export default {
 			return state;
 		},
 	},
+	mounted() {
+		state.document = state.user.documents[state.selectedDocument];
+	}
 };
 </script>
 <style scoped>

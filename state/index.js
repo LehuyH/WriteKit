@@ -1,101 +1,210 @@
-import Vue from 'vue';
+import Vue from "vue";
 
 import * as localForage from "localforage";
-import themes from '@/assets/default-themes.json';
-import blockPacks from '@/assets/default-blockpacks.json';
+import themes from "@/assets/default-themes.json";
+import blockPacks from "@/assets/default-blockpacks.json";
 
 export const state = new Vue({
   methods: {
-    async installTheme(theme){
+    async createDocument(){
+        let user = await localForage.getItem("user");
+        //User exists?
+        if(user == null || user == undefined){
+          return false;
+        }
+
+        user.documents.push({metadata:{title:"Untitled Document"},content:[]})
+        await localForage.setItem("user", user);
+        
+        //Load into memory
+        this.user = user
+        return user.documents.length - 1
+    },
+    async installBlockPack(blockPack) {
       let user = await localForage.getItem("user");
       let data = await localForage.getItem("data");
 
       //Make sure they have a user init
-      if(user == null || data == null){
-        return false
+      if (user == null || data == null) {
+        return false;
       }
 
       //Confirm it exists
-      if(theme == null || theme == undefined){
-        return false
+      if (blockPack == null || blockPack == undefined) {
+        return false;
       }
 
-      data.themes.push(theme)
-      await localForage.setItem("data", data);
+      //Make sure they don't install the same 
+      if(data.blockPacks.find(bp => bp == blockPack) !== undefined){
+        return false;
+      }
 
-       //Load everything into memory
-       user.data = data
-       this.user = user
-       this.themes = data.themes
-       this.blocks = [].concat.apply([], data.blockPacks.map(b => b.blocks))
-       return true
+      data.blockPacks.push(blockPack);
+      await localForage.setItem("data", data);
+      //Load everything into memory
+      user.data = data;
+      this.user = user;
+      this.themes = data.themes;
+      const newBlocks = [];
+      data.blockPacks.forEach(b => newBlocks.push(...b.blocks));
+      this.blocks = newBlocks;  
+
+        console.log(
+          [].concat.apply(
+            [],
+            data.blockPacks.map(b => b.blocks)
+          )
+        );
+      return true;
     },
-    async installBlockPack(blockPack){
+    async deleteDocument(index) {
+      let user = await localForage.getItem("user");
+
+      //Make sure they have a user init
+      if (user == null || user == undefined) {
+        return false;
+      }
+
+      //Confirm it exists
+      if (user.documents[index] == undefined) {
+        return false;
+      }
+      user.documents = user.documents.splice(index,1)
+      await localForage.setItem("user", user);
+      
+
+      //Load everything into memory
+      this.user = user;
+      return true;
+    },
+    async installTheme(theme) {
       let user = await localForage.getItem("user");
       let data = await localForage.getItem("data");
 
       //Make sure they have a user init
-      if(user == null || data == null){
-        return false
+      if (user == null || data == null) {
+        return false;
       }
 
       //Confirm it exists
-      if(blockPack == null || blockPack == undefined){
-        return false
+      if (theme == null || theme == undefined) {
+        return false;
       }
-      data.blockPacks.push(blockPack)
+      //Make sure they have a user init
+      if (user == null || data == null) {
+        return false;
+      }
+
+      //Confirm it exists
+      if (theme == null || theme == undefined) {
+        return false;
+      }
+
+      //Make sure they don't install the same 
+      if(data.themes.find(t => t == theme) !== undefined){
+        return false;
+      }
+
+
+      data.themes.push(theme);
       await localForage.setItem("data", data);
-       //Load everything into memory
-       user.data = data
-       this.user = user
-       this.themes = data.themes
-       this.blocks = [].concat.apply([], data.blockPacks.map(b => b.blocks))
-       return true
+
+      //Load everything into memory
+      user.data = data;
+      this.user = user;
+      this.themes = data.themes;
+      this.blocks = [].concat.apply(
+        [],
+        data.blockPacks.map(b => b.blocks)
+      );
+      return true;
     },
-    async getUser(){
+    async installBlockPack(blockPack) {
+      let user = await localForage.getItem("user");
+      let data = await localForage.getItem("data");
+
+      //Make sure they have a user init
+      if (user == null || data == null) {
+        return false;
+      }
+
+      //Confirm it exists
+      if (blockPack == null || blockPack == undefined) {
+        return false;
+      }
+
+      //Make sure they don't install the same 
+      if(data.blockPacks.find(bp => bp == blockPack) !== undefined){
+        return false;
+      }
+
+      data.blockPacks.push(blockPack);
+      await localForage.setItem("data", data);
+      //Load everything into memory
+      user.data = data;
+      this.user = user;
+      this.themes = data.themes;
+      const newBlocks = [];
+      data.blockPacks.forEach(b => newBlocks.push(...b.blocks));
+      this.blocks = newBlocks;  
+
+        console.log(
+          [].concat.apply(
+            [],
+            data.blockPacks.map(b => b.blocks)
+          )
+        );
+      return true;
+    },
+    async getUser() {
       let user = await localForage.getItem("user");
       let data = await localForage.getItem("data");
 
       //Create user if not made
       if (user == null) {
         user = {
-          documents: [{
-            metadata: {
-              title: "Untitled Document LOL"
-            },
-            content: []
-          }],
+          documents: [
+            {
+              metadata: {
+                title: "Untitled Document LOL"
+              },
+              content: []
+            }
+          ]
         };
         await localForage.setItem("user", user);
       }
       //Add default data
       if (data == null) {
         data = {
-         themes:themes,
-         blockPacks:blockPacks,
-         extentions: []
+          themes: themes,
+          blockPacks: blockPacks,
+          extentions: []
         };
         await localForage.setItem("data", data);
       }
 
       //Load everything into memory
-      user.data = data
-      this.user = user
-      this.themes = data.themes
-      this.blocks = [].concat.apply([], data.blockPacks.map(b => b.blocks))
-      return user
+      user.data = data;
+      this.user = user;
+      this.themes = data.themes;
+      const newBlocks = [];
+      data.blockPacks.forEach(b => newBlocks.push(...b.blocks));
+      this.blocks = newBlocks
+
+      return user;
     },
-    async selectDoc(){
+    async selectDoc() {
       if (state.selectedDocument == null) {
         //prompt user to choose a doc
       } else {
-        state.document = this.user.documents[state.selectedDocument]
+        state.document = this.user.documents[state.selectedDocument];
       }
     },
-    async saveDoc(index=0){
-      this.user.documents[state.selectedDocument] = this.document
-      let save = localForage.setItem('user', this.user);
-      return save
+    async saveDoc(index = 0) {
+      this.user.documents[state.selectedDocument] = this.document;
+      let save = localForage.setItem("user", this.user);
+      return save;
     }
   },
   data: {
@@ -114,23 +223,22 @@ export const state = new Vue({
     selectedDocument: 0,
     selectionIndex: {
       blockIndex: null,
-      typeIndex: null,
+      typeIndex: null
     },
     menus: {
       selectedBlock: null,
-      export: false,
+      export: false
     },
     themes: [],
     settings: {
       borders: false,
       templateOpen: false,
       box: false,
-      tooltip: false,
-
+      tooltip: false
     }
   },
   watch: {
-    document:  {
+    document: {
       deep: true,
       handler() {
         this.saveDoc();
@@ -139,5 +247,4 @@ export const state = new Vue({
   }
 });
 
-
-export default state
+export default state;

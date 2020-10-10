@@ -86,16 +86,13 @@ export default {
 			state.menus.export = !state.menus.export;
 		},
 		handleOption(option) {
-			console.log(option);
 			let newType = JSON.parse(JSON.stringify(option));
 			newType.content = "";
 			state.document.content[state.currentBlockIndex].push(newType);
-			console.log(newType);
 			state.typeIndex = option.newIndex;
 			state.special = null;
 		},
 		createNewBlock(block) {
-			console.log(block);
 			//Reset indexs
 			state.typeIndex = 0;
 			let nextType = JSON.parse(
@@ -105,7 +102,6 @@ export default {
 			state.document.content.push([nextType]);
 			state.currentBlock = block;
 			state.currentBlockIndex = state.document.content.length - 1;
-			console.log(state.document);
 		},
 		onTab() {
 			//User pressed enter, determine next action
@@ -186,11 +182,6 @@ export default {
 		},
 	},
 	components: { Draggable },
-	created: async function () {
-		const temp = await state.getUser()
-		const res = await state.selectDoc()
-		console.log(temp)
-	},
 };
 </script>
 
