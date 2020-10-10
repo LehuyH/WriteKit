@@ -44,6 +44,9 @@ export default {
 		},
 	},
 	mounted() {
+		if (!("user" in state) | !state.user.documents) {
+			this.$router.push("/documents");
+		}
 		state.document = state.user.documents[state.selectedDocument];
 	}
 };

@@ -35,7 +35,7 @@ export const state = new Vue({
       }
 
       //Make sure they don't install the same 
-      if(data.blockPacks.find(bp => bp == blockPack) !== undefined){
+      if(data.blockPacks.find(bp => bp.name == blockPack.name) !== undefined){
         return false;
       }
 
@@ -69,7 +69,7 @@ export const state = new Vue({
       if (user.documents[index] == undefined) {
         return false;
       }
-      user.documents = user.documents.splice(index,1)
+      user.documents = user.documents.filter((d, i) => i !== index);
       await localForage.setItem("user", user);
       
 

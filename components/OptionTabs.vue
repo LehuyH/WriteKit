@@ -120,12 +120,31 @@
 				<h1 class="title">Marketplace</h1>
 				<br>
 				<section v-if="isOnline">
-					<b-button size="is-medium" type="is-primary"  @click="load('bp')" icon-left="format-align-center">
+					<div>
+					<b-button size="is-medium" type="is-primary" :loading="isLoading"  @click="load('blockPack')" icon-left="format-align-center">
 						 Search for Block Packs
 					 </b-button>
-					 <b-button size="is-medium" type="is-primary"  @click="load('t')"  icon-left="palette">
+					 <b-button size="is-medium" type="is-primary"  :loading="isLoading" @click="load('theme')"  icon-left="palette">
 						 Search for Themes
 					 </b-button>
+					 </div>
+
+					<div v-if="isConnected">
+						<br>
+						<h2>Offical {{type}}s</h2>
+						<b-table :data="data">
+							<b-table-column field="name" label="Name" width="40" v-slot="props">
+                				{{ props.row.name }}
+            				</b-table-column>
+							<b-table-column field="desc" label="Description" width="80" v-slot="props">
+                				{{ props.row.desc }}
+            				</b-table-column>
+							<b-table-column label="View" field="_id" width="40"  v-slot="props">
+                				<b-button type="is-success" @click="promptInstall(props.row._id)">View</b-button>
+            				</b-table-column>
+						</b-table>
+					</div>
+					
 				</section>
 				<h2 v-else>Marketplace does not work in offline mode :c</h2>
 			
@@ -136,6 +155,7 @@
 
 <script>
 import state from "../state/index.js";
+import axios from "axios";
 export default {
 	computed: {
 		state() {
@@ -150,9 +170,32 @@ export default {
 		return {
 			selectedTheme: null,
 			isConnected:false,
+			isLoading:false,
+			type:"",
 		};
 	},
 	methods: {
+		promptInstall(id){
+			window.open(`${window.location.protocol}//${window.location.host}/install/${this.type}/${id}`)
+		},
+		async load(type) {
+			this.isLoading = true
+			this.isConnected = false
+			this.type = type.toLowerCase()
+			const listing = await axios.post(`${window.location.protocol}//${window.location.host}/.netlify/functions/get-marketplace`, {
+			  type
+			})
+			console.log(listing)
+			if(listing.data.success){
+				this.data = listing.data.data
+				this.isConnected = true
+				this.isLoading = false
+			}else{
+				this.isLoading = false
+				this.$buefy.toast.open({type:"is-danger",message:"Could not get marketplace, please try again!"})
+			}
+
+		},
 		changeTheme(e) {
 			let style = document.getElementById("GLOBAL_STYLE");
 			if (style == null) {

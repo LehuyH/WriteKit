@@ -56,7 +56,13 @@ export default {
             this.$buefy.toast.open("Installed!")
           }else{
             this.$buefy.toast.open("Could not install theme, please try again later")
-         
+          }
+        }else if(this.type =="blockpack"){
+          let install = await state.installBlockPack(this.item)
+          if(install){
+            this.$buefy.toast.open("Installed!")
+          }else{
+            this.$buefy.toast.open("Could not install theme, please try again later")
           }
         }
 

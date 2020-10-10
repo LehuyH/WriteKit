@@ -11,16 +11,31 @@
 
 		<form @submit.prevent="createBlockPack" class="section">
 			<h1 class="title is-4">Pack Name</h1>
-			<b-field>
-				<b-input v-model="pack.name" placeholder="What is your block pack called?" />
+			<b-field label="Name">
+				<b-input
+					v-model="pack.name"
+					placeholder="What is your block pack called?"
+				/>
 			</b-field>
-			<b-field>
-				<b-input v-model="pack.author" placeholder="What is your name?" />
+			<b-field label="Author">
+				<b-input
+					v-model="pack.author"
+					placeholder="What is your name?"
+				/>
 			</b-field>
-			<b-field>
-				<b-input v-model="pack.version" placeholder="What is the block pack version?" />
+			<b-field label="Version">
+				<b-input
+					v-model="pack.version"
+					placeholder="What is the block pack version?"
+				/>
 			</b-field>
-			<textarea-autosize class="input" placeholder="Block pack description" v-model="pack.desc" />
+			<b-field label="Description">
+				<textarea-autosize
+					class="input"
+					placeholder="Block pack description"
+					v-model="pack.desc"
+				/>
+			</b-field>
 			<br />
 
 			<h1 class="title is-4">Blocks</h1>
@@ -38,15 +53,23 @@
 				</p>
 				<br />
 
-					<form @submit.prevent="importBlockPack"> 
-						 <b-select v-model="selectedPack" placeholder="Select a Block Pack">
-						 	<option v-for="(option,i) in state.user.data.blockPacks" :value="option" :key="`bp-${i}`">
-						 		{{ option.name }}
-						 	</option>
-						 </b-select>
-					<b-button type="is-info" native-type="submit">import Pack</b-button>
-					</form>
-
+				<form @submit.prevent="importBlockPack">
+					<b-button type="is-info" native-type="submit" extended
+						>Import Pack</b-button
+					>
+					<b-select
+						v-model="selectedPack"
+						placeholder="Select a Block Pack"
+					>
+						<option
+							v-for="(option, i) in state.user.data.blockPacks"
+							:value="option"
+							:key="`bp-${i}`"
+						>
+							{{ option.name }}
+						</option>
+					</b-select>
+				</form>
 			</b-field>
 			<br />
 
@@ -154,20 +177,22 @@ export default {
 				})),
 			};
 		},
-		state: () => state
+		state: () => state,
 	},
 	methods: {
-		importBlockPack(){
-			if(this.selectedPack !== null){
-				let pack = this.selectedPack
-				pack.blocks = pack.blocks.map(b => ({ 
-					...b, 
-					types: b.types.map(t => ({ 
-						...t, starters: t.starters.join("\n") 
-					})) 
+		importBlockPack() {
+			if (this.selectedPack !== null) {
+				console.log(this.selectedPack);
+				let pack = this.selectedPack;
+				pack.blocks = pack.blocks.map((b) => ({
+					...b,
+					types: b.types.map((t) => ({
+						...t,
+						starters: (t.starters || []).join("\n"),
+					})),
 				}));
-			this.pack = pack
-			this.selectedPack = null
+				this.pack = pack;
+				this.selectedPack = null;
 			}
 		},
 		async installBlock() {
