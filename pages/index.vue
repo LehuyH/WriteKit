@@ -12,19 +12,16 @@
 							style="font-size: 8rem"
 						>
 							WriteKit
+							
 						</h1>
+						<h class="title first-subtitle">Rewriting the writing process</h>
 						<h2 class="subtitle">
 							A powerful, flexible, and simple block based
 							document editor.
 						</h2>
 						<br />
 						<nuxt-link to="/dashboard">
-							<b-button type="is-primary is-light"
-								>My Documents</b-button
-							>
-						</nuxt-link>
-						<nuxt-link to="/write">
-							<b-button type="is-primary">Launch Demo!</b-button>
+							<b-button type="is-primary">Get started!</b-button>
 						</nuxt-link>
 					</section>
 					<section class="column">
@@ -34,7 +31,7 @@
 			</div>
 		</section>
 		<div class="my-6 container has-text-centered">
-			<h2 class="title">What is WriteKit?</h2>
+			<h2 class="title bottom-header">What is WriteKit?</h2>
 			<p class="subtitle" style="margin-left: 20%; margin-right: 20%">
 				Writekit is a document editor that makes the process of writing
 				more approachable and enjoyable. <br /><br />
@@ -78,6 +75,18 @@ export default {
 		1s both;
 	animation: tilt-in-right-2 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s both;
 }
+
+.first-subtitle {
+	position: relative;
+	bottom: 2.5rem;
+}
+
+.bottom-header {
+	position: relative;
+	bottom: 2rem;
+}
+
+
 @-webkit-keyframes tilt-in-right-2 {
 	0% {
 		-webkit-transform: rotateX(30deg) translateX(300px) skewX(-30deg);

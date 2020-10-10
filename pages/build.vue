@@ -117,7 +117,16 @@
 						:key="i"
 					>	
 						<div>
+							{{type.special}}
+							 <div class="field" >
+							 	<b-checkbox v-model="type.special">Loop</b-checkbox>
+							 </div>
+							  <b-field>
+							  	<b-numberinput v-model="type.index"></b-numberinput>
+							  </b-field>
 						</div>
+						<br>
+						<section v-if="!type.special">
 						<div>
 							<input
 								class="input title is-6 title-input"
@@ -161,6 +170,7 @@
 								/>
 							</div>
 						</div>
+						</section>
 					</section>
 				</div>
 			</Draggable>
@@ -195,6 +205,8 @@ export default {
 					types: block.types.map((type) => ({
 						...type,
 						starters: type.starters.split("\n"),
+						special: type.special ? "loop" : undefined,
+						index: type.index ? parseInt(type.index) : undefined
 					})),
 				})),
 			};
@@ -216,6 +228,7 @@ export default {
 					types: b.types.map((t) => ({
 						...t,
 						starters: (t.starters || []).join("\n"),
+						special: t.special === "loop"
 					})),
 				}));
 				this.pack = pack;
