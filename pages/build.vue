@@ -82,7 +82,7 @@
 						type="is-primary"
 						tag="a"
 						:href="downloadURL"
-						:download="`${pack.name || `new-pack`}.wk`"
+						:download="`${pack.name || `new-pack`}.wkpack`"
 					>
 						Download Pack
 					</b-button>
@@ -115,7 +115,9 @@
 						class="type-editor"
 						v-for="(type, i) in block.types"
 						:key="i"
-					>
+					>	
+						<div>
+						</div>
 						<div>
 							<input
 								class="input title is-6 title-input"

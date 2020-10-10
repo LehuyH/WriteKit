@@ -81,6 +81,33 @@ export const state = new Vue({
             );
             return true;
         },
+        async deleteTheme(index) {
+          let user = await localForage.getItem("user");
+          let data = await localForage.getItem("data");
+
+          //Make sure they have a user init
+          if (user == null || user == undefined) {
+              return false;
+          }
+          if (data == null || data == undefined) {
+            return false;
+        }
+
+          //Confirm it exists
+          if (data.themes[index] == undefined) {
+              return false;
+          }
+          data.themes = data.themes.filter((d, i) => i !== index);
+          await localForage.setItem("data", data);
+
+
+          //Load everything into memory
+           //Load everything into memory
+           user.data = data;
+           this.user = user;
+           this.themes = data.themes;
+           return true;
+      },
         async deleteDocument(index) {
             let user = await localForage.getItem("user");
 
@@ -187,12 +214,7 @@ export const state = new Vue({
             //Create user if not made
             if (user == null) {
                 user = {
-                    documents: [{
-                        metadata: {
-                            title: "Untitled Document LOL"
-                        },
-                        content: []
-                    }]
+                    documents: [{metadata:{title:"Demo Document"},content:[]}]
                 };
                 await localForage.setItem("user", user);
             }

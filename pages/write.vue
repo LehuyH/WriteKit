@@ -22,7 +22,7 @@
 							</b-button>
 						</p>
 						<p class="control">
-							<b-button type="is-warning">
+							<b-button tag="a" type="is-warning" :href="downloadAsWriteKitURL" :download="`${state.document.metadata.title}.wkdoc`">
 								WriteKit (.wkdoc)
 							</b-button>
 						</p>
@@ -44,7 +44,10 @@ export default {
 			return state;
 		},
 		downloadAsTextURL() {
-			return `data:text/plain;charset=utf-8,${this.stitchContent(state.document.metadata.title, state.document.content)}`;
+			return `data:text/plain;charset=utf-8,${encodeURIComponent(this.stitchContent(state.document.metadata.title, state.document.content))}`;
+		},
+		downloadAsWriteKitURL() {
+			return `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(state.document))}`;
 		}
 	},
 	mounted() {

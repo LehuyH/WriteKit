@@ -76,6 +76,17 @@
 					>
 						Add a document <b>+</b>
 					</b-button>
+
+					<b-field>
+						<b-upload v-model="docUpload" drag-drop expanded>
+							<div class="section has-text-centered">
+								<b-icon icon="upload" size="is-large"></b-icon>
+								<p class="subtitle is-4">
+									Drag your block file here.
+								</p>
+							</div>
+						</b-upload>
+					</b-field>
 				</div>
 			</template>
 
@@ -123,18 +134,33 @@
 					</b-upload>
 				</b-field>
 			</template>
+
 			<template v-if="page === 'Themes'">
 				<div
 					class="box blockpack-card"
 					v-for="(theme, i) in state.user.data.themes"
 					:key="i"
 				>
+					<div style="float: right">
+						<a
+							class="active-link"
+							:download="`${theme.name}.wktheme`"
+							:href="getDownloadURL(theme)"
+							><b-icon icon="download"
+						/></a>
+						<a class="active-link" @click="state.deleteTheme(i)"
+							><b-icon icon="delete"
+						/></a>
+					</div>
+
 					<div>
 						<strong class="title is-5">{{ theme.name }}</strong>
 
 						<p class="writing-preview">{{ theme.desc }}</p>
-						<br>
-						<b-button @click="changeTheme(theme)" type="is-success">Load Theme</b-button>
+						<br />
+						<b-button @click="changeTheme(theme)" type="is-success"
+							>Load Theme</b-button
+						>
 					</div>
 				</div>
 
@@ -155,7 +181,7 @@
 
 <script>
 import state from "@/state";
-import axios from "axios"
+import axios from "axios";
 export default {
 	data() {
 		return {
@@ -164,6 +190,7 @@ export default {
 
 			packUpload: null,
 			themeUpload: null,
+			docUpload: null
 		};
 	},
 
@@ -208,8 +235,10 @@ export default {
 			}
 		},
 		getDownloadURL(pack) {
-			return `data:application/json;charset=utf-8,${encodeURIComponent(JSON.stringify(pack))}`;
-		}
+			return `data:application/json;charset=utf-8,${encodeURIComponent(
+				JSON.stringify(pack)
+			)}`;
+		},
 	},
 	watch: {
 		async themeUpload(themeFile) {
@@ -218,13 +247,20 @@ export default {
 
 			// Confirm it's a valid file:
 			if (themeFile instanceof File) {
+				// Confirm file extension:
+				if (!packFile.name.endsWith(".wktheme")) {
+					this.$buefy.toast.open(
+						"The file is not a valid block pack (*.wktheme)."
+					);
+				}
+
 				// Confirm it's JSON:
 				try {
 					const fileData = await themeFile.text();
 					console.log("new theme", fileData);
 					const data = JSON.parse(fileData);
-					let theme = await axios.get(data.theme)
-          			data.theme = theme.data
+					let theme = await axios.get(data.theme);
+					data.theme = theme.data;
 					const res = await state.installTheme(data);
 					if (res) this.$buefy.toast.open("Installed theme!");
 					else this.$buefy.toast.open("Could not install, try again");
@@ -248,9 +284,9 @@ export default {
 			// Confirm it's a valid file:
 			if (packFile instanceof File) {
 				// Confirm file extension:
-				if (!packFile.name.endsWith(".wk")) {
+				if (!packFile.name.endsWith(".wkpack")) {
 					this.$buefy.toast.open(
-						"The file is not a valid block pack (*.wk)."
+						"The file is not a valid block pack (*.wkpack)."
 					);
 				}
 
@@ -274,6 +310,43 @@ export default {
 				this.packUpload = null;
 			}
 		},
+		async docUpload(docFile) {
+			// Null-check:
+			if (docFile === null) return;
+
+			// Confirm it's a valid file:
+			if (docFile instanceof File) {
+				// Confirm file extension:
+				if (!docFile.name.endsWith(".wkdoc")) {
+					this.$buefy.toast.open(
+						"The file is not a valid document (*.wkdoc)."
+					);
+				}
+
+				// Confirm it's JSON:
+				try {
+					const fileData = await docFile.text();
+					const data = JSON.parse(fileData);
+
+					const res = await state.createDocument();
+					if (res !== false) {
+						state.user.documents[res] = data;
+						this.$buefy.toast.open("Saved Document!");
+					}
+					else this.$buefy.toast.open("Could not upload, try again");
+					this.docUpload = null;
+				} catch (e) {
+					console.log(e);
+					this.$buefy.toast.open(
+						"The file is unreadable. Please try again with another file."
+					);
+					this.docUpload = null;
+				}
+			} else {
+				this.$buefy.toast.open("Invalid file, please try again.");
+				this.docUpload = null;
+			}
+		}
 	},
 };
 </script>
