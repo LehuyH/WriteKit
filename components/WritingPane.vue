@@ -3,7 +3,7 @@
 		<GlobalEvents @keydown.tab="onTab" />
 		<!-- Title -->
 		<header class="level">
-			<p class="level-left">Currently editing...</p>
+			<p></p>
 			<section class="level-right">
 			<b-button
 				type="is-primary"
@@ -34,11 +34,15 @@
 					:index="i"
 				/>
 			</Draggable>
+			<br>
 
-			<section v-if="state.currentBlockIndex == null || state.document.content.length == 0">
+			
+		</div>
+		<section v-if="state.currentBlockIndex == null || state.document.content.length == 0">
 				<h3 class="subtitle">Create a new..</h3>
+				<span>Search: </span><input v-model="searchInput" placeholder="Introduction" type="text" />
 				<p
-					v-for="(block, i) in state.blocks"
+					v-for="(block, i) in filteredBlocks"
 					:key="i"
 					@click="createNewBlock(block)"
 					class="link"
@@ -49,15 +53,20 @@
 			<section v-if="state.special !== null">
 				<h3 class="subtitle">What's next?</h3>
 				<p
-					v-for="(option, i) in state.special.options"
+					v-for="(option, i) in state.special.options.filter(option => option !== undefined && option !== null)"
 					:key="`${option.name}%${i}`"
 					class="link"
 					@click="handleOption(option)"
 				>
 					{{ option.name }}
 				</p>
+				<p
+					class="link"
+					@click="endBlock()"
+				>
+					End Block
+				</p>
 			</section>
-		</div>
 	</div>
 </template>
 
@@ -68,10 +77,23 @@ import Draggable from "vuedraggable";
 let staticIndex = 0;
 
 export default {
+	data(){
+		return {
+			searchInput:"",
+			zoom:10
+		}
+	},
 	computed: {
 		state() {
 			return state;
 		},
+		filteredBlocks(){
+			if(this.searchInput.trim() !== ""){
+				return state.blocks.filter(block => block.name.toLowerCase().includes(this.searchInput.toLowerCase()))
+			}else{
+				return state.blocks
+			}
+		}
 	},
 	methods: {
 		saveDoc(){
@@ -90,6 +112,8 @@ export default {
 			state.document.content[state.currentBlockIndex].push(newType);
 			state.typeIndex = option.newIndex;
 			state.special = null;
+			
+			
 		},
 		createNewBlock(block) {
 			//Reset indexs
@@ -101,6 +125,12 @@ export default {
 			state.document.content.push([nextType]);
 			state.currentBlock = block;
 			state.currentBlockIndex = state.document.content.length - 1;
+		},
+		endBlock(){
+			state.currentBlock = null;
+			state.currentBlockIndex = null;
+			state.typeIndex = 0;
+			state.special = null;
 		},
 		onTab() {
 			//User pressed enter, determine next action
@@ -145,13 +175,13 @@ export default {
 							state.currentBlock.types[
 								state.currentBlock.types[state.typeIndex].index
 							];
-						let next =
-							state.currentBlock.types[state.typeIndex + 1];
+						let next = state.currentBlock.types[state.typeIndex + 1];
 
 						//Format to special
-						last.newIndex =
-							state.currentBlock.types[state.typeIndex].index;
+						last.newIndex = state.currentBlock.types[state.typeIndex].index;
+						if(next !== undefined){
 						next.newIndex = state.typeIndex + 1;
+						}
 						//Add to menu
 						options.push(last);
 						options.push(next);
@@ -177,6 +207,7 @@ export default {
 					message: `Writing ${item.name}`,
 				});
 				state.selected = item;
+
 			}
 		},
 	},
@@ -188,7 +219,7 @@ export default {
 .writing-pane {
 	flex: 2;
 	background: var(--light);
-	height: 80vh;
+	height: 110vh;
 }
 
 .disguised-input {
@@ -219,6 +250,7 @@ export default {
 .textContainer {
 	max-height: 70vh;
 	overflow-y: scroll;
+	
 }
 .textContainer::-webkit-scrollbar {
 	width: 12px;

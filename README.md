@@ -1,4 +1,6 @@
 # writekit
+🏆 Winner of GigaHacks 2020
+[Gigahacks](https://www.gigahacks.tech)
 
 ## Build Setup
 

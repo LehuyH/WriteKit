@@ -15,7 +15,9 @@
 
 		<div class="section container" v-if="state.user">
 			<template v-if="page === 'Documents'">
+				<section  v-if="state.user.documents.length !== 0">
 				<div
+				
 					class="box document-card"
 					v-for="(document, i) in state.user.documents"
 					:key="i"
@@ -62,7 +64,7 @@
 						</p>
 					</div>
 				</div>
-
+				</section>
 				<div style="margin: 1rem">
 					<div v-if="state.user.documents.length === 0">
 						<h3 class="subtitle is-3">You have no documents!</h3>
@@ -108,7 +110,7 @@
 							/></a>
 							<a
 								class="active-link"
-								@click="state.deleteDocument(i)"
+								@click="state.deleteBlock(i)"
 								><b-icon icon="delete"
 							/></a>
 						</div>

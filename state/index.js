@@ -21,19 +21,36 @@ export const state = new Vue({
             return user.documents.length - 1
         },
         async deleteBlock(index) {
-            //Confirm it exists
-            if (this.document.content[index] == undefined) {
+            let user = await localForage.getItem("user");
+            let data = await localForage.getItem("data");
+            //User exists?
+            if (user == null || user == undefined) {
                 return false;
             }
+            if (data == null || user == undefined) {
+                return false;
+            }
+            data.blockPacks = data.blockPacks.filter((d, i) => i !== index);
+            await localForage.setItem("data", data);
 
-            this.document.content = this.document.content.filter((d, i) => i !== index);
+            //Load into memory
+
+            user.data = data;
+            this.user = user;
+            const newBlocks = [];
+            data.blockPacks.forEach(b => newBlocks.push(...b.blocks));
+            this.blocks = newBlocks
 
             return true;
         },
         async createDocument() {
             let user = await localForage.getItem("user");
+            let data = await localForage.getItem("data");
             //User exists?
             if (user == null || user == undefined) {
+                return false;
+            }
+            if (data == null || user == undefined) {
                 return false;
             }
 
@@ -72,13 +89,6 @@ export const state = new Vue({
             const newBlocks = [];
             data.blockPacks.forEach(b => newBlocks.push(...b.blocks));
             this.blocks = newBlocks;
-
-            console.log(
-                [].concat.apply(
-                    [],
-                    data.blockPacks.map(b => b.blocks)
-                )
-            );
             return true;
         },
         async deleteTheme(index) {
@@ -102,7 +112,6 @@ export const state = new Vue({
 
 
           //Load everything into memory
-           //Load everything into memory
            user.data = data;
            this.user = user;
            this.themes = data.themes;

@@ -8,7 +8,7 @@
 					</h2>
 					<p style="white-space: pre-wrap; text-align: left">{{ state.selected.desc }}</p>
 					<br />
-					<b v-if="state.selected.starters.length == 0"
+					<b v-if="state.selected.starters.filter(e => e.trim() !== '').length == 0"
 						>No Templates Available</b
 					>
 					<b-collapse v-else class="panel" animation="slide">
@@ -95,6 +95,26 @@
 							>Titles</b-switch
 						>
 					</div>
+				</section>
+				<br>
+				<section>
+					<h2 class="subtitle">Themes</h2>
+					<b-field label="Theme">
+						<b-select
+							v-model="selectedTheme"
+							@input="changeTheme"
+							placeholder="Select a theme"
+							expanded
+						>
+							<option
+								v-for="(option,i) in state.themes"
+								:value="option.theme"
+								:key="`themesel-${i}`"
+							>
+								{{ option.name }}
+							</option>
+						</b-select>
+					</b-field>
 				</section>
 			</b-tab-item>
 			<b-tab-item label="Marketplace">

@@ -59,8 +59,8 @@ export default {
 		}
 	},
 	mounted() {
-		if (!("user" in state) | !state.user.documents) {
-			this.$router.push("/documents");
+		if (state.user == null) {
+			this.$router.push("/dashboard");
 		}
 		state.document = state.user.documents[state.selectedDocument];
 	},

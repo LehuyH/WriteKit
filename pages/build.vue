@@ -116,17 +116,21 @@
 						v-for="(type, i) in block.types"
 						:key="i"
 					>	
+					<br>
 						<div>
-							{{type.special}}
+						
 							 <div class="field" >
-							 	<b-checkbox v-model="type.special">Loop</b-checkbox>
+							 	<b-checkbox v-model="type.special">Loop?</b-checkbox>
 							 </div>
-							  <b-field>
-							  	<b-numberinput v-model="type.index"></b-numberinput>
-							  </b-field>
+							 <section v-if="type.special">
+							 	<p clas="subtitle">Index to jump To</p>
+							  	<input type="number" v-model="type.index"/>
+							 </section>
+						
 						</div>
 						<br>
 						<section v-if="!type.special">
+						
 						<div>
 							<input
 								class="input title is-6 title-input"
@@ -134,7 +138,7 @@
 								v-model="type.name"
 							/>
 						</div>
-
+							<h2 class="subtitle">{{i}}</h2>
 						<div class="columns">
 							<div class="column">
 								<h4 class="subtitle is-6">Description</h4>
@@ -191,6 +195,7 @@ export default {
 				desc: "",
 				version: "",
 				blocks: [],
+				author: "",
 			},
 		};
 	},
@@ -200,6 +205,7 @@ export default {
 				name: this.pack.name,
 				desc: this.pack.desc,
 				version: this.pack.version,
+				author: this.pack.author,
 				blocks: this.pack.blocks.map((block) => ({
 					name: block.name,
 					types: block.types.map((type) => ({
@@ -269,8 +275,11 @@ export default {
 </script>
 
 <style scoped>
+.whitesmoke{
+	color:whitesmoke !important;
+}
 .box * {
-	color: white;
+	color: whitesmoke;
 }
 
 .editor-box {
