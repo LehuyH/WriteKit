@@ -55,7 +55,7 @@
 					<div>
 						<div
 							class="level add-block-card"
-							v-for="(type, i) in block.types"
+							v-for="(type, i) in block.types.filter(t=> t.special == undefined)"
 							:key="i"
 							:style="`border-color: ${type.color}; align-items: end;`"
 						>
